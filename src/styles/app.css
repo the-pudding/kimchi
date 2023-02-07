@@ -66,6 +66,10 @@
 	}
 }
 
+body {
+	font-family: "National 2 Web";
+}
+
 h1 {
 	font-size: var(--48px, 48px);
 }
@@ -88,4 +92,64 @@ h5 {
 
 h6 {
 	font-size: var(--20px, 20px);
+}
+
+/* ----------
+Kimchi styles
+---------- */
+.scene {
+	max-width: 1100px;
+	width: 100%;
+	margin: 0 auto;
+	overflow: hidden;	
+	height: 90vh;
+	position: relative;
+	margin-bottom: 10vh;
+}
+.yearLabel {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	padding: 4px;
+	background: black;
+	color: white;
+	font-size: 27px;
+}
+.scene .sceneInside {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 200%;
+/* 	height: 100%; */
+	max-width: none;
+}
+@media screen and (min-width: 570px) {
+	.scene .sceneInside {
+		width: 100%;
+		max-height: 90vh;
+	}
+}
+.sceneImage {
+	width: 100%;
+}
+
+.button {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	padding: 20px;
+	background: rgba(0,0,0,0.8);
+	color: white;
+	font-size: 24px;
+	border-radius: 20px;
+	cursor: pointer;
+}
+.button:hover {
+	background: rgba(0,0,0,0.9);
+}
+.panButton {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: red;
 }
