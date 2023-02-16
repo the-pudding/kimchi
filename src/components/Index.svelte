@@ -8,6 +8,6 @@
 	// const data = getContext("data");
 </script>
 
-<!-- <WIP /> -->
+<WIP />
 <Kimchi copy={copy}/>
 <!-- <Footer /> -->
