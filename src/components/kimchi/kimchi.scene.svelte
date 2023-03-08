@@ -10,13 +10,14 @@
 	let modalShown = false;
 	let allClicked = false;
 	let hed, words, type, image, alt;
+	let fullWidth = 2200/100;
 	
 	
 	function showModal(e) {
 		hed = e.target.getAttribute("hed");
 		words = e.target.getAttribute("words");
 		type = e.target.getAttribute("type");
-		image = e.target.getAttribute("image");
+		image = "scene" + chapter + "/" + e.target.getAttribute("image");
 		alt = e.target.getAttribute("alt");
 		e.target.classList.add("clicked");
 		e.target.classList.remove("pulse");
@@ -60,27 +61,31 @@
 </script>
 
 	<div class="sceneInside" on:click={getPosition} on:keydown={getPosition}  transition:fade="{{duration: 500}}">
-		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/{chapterTracker}.png" on:click={closeModal} on:keydown={closeModal} />
+		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} />
 		<div class="yearLabel">{year}</div>
 		{#each hoverHints as hint}
-			<button class="hoverHint pulse" num={hint.id} hed={hint.hed} words={hint.words} type={hint.type} image={hint.image} alt={hint.alt} style="left:{hint.x}%; top:{hint.y}%;" on:click={showModal} on:keydown={showModal}></button>
+			{#if hint.width > 500}
+				<img class="hoverHint pulse bigItem {hint.addclass}" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" image={hint.image} hed={hint.hed} words={hint.words} type={hint.type} style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal}/>
+			{:else}
+				<img class="hoverHint pulse smallItem {hint.addclass}" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" image={hint.image} hed={hint.hed} words={hint.words} type={hint.type} style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal}/>
+			{/if}
 		{/each}
 		{#if modalShown}
 			<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
 				<button class="closeModal" on:click={closeModal} on:keydown={closeModal}>x</button>
-				{#if type == "bigImage"}
+				<!-- {#if type == "bigImage"}
 				<div class="modalWords">
 					<span class="hed">{hed}</span>
 					<span>{words}</span>
 				</div>
 				<img alt="{alt}" src="assets/kimchi/{image}" />
-				{:else}
+				{:else} -->
 				<div class="modalWords">
 					<img alt="{alt}" src="assets/kimchi/{image}" />
 					<span class="hed">{hed}</span>
 					<span>{words}</span>
 				</div>
-				{/if}
+				<!-- {/if} -->
 			</div>
 		{/if}
 		<!-- {#if allClicked} -->
@@ -88,11 +93,15 @@
 		<!-- {/if} -->
 		<div class="panButton">PAN</div>
 	</div>
-	<div class="debugger">
-		<div>x: {clickedPos.x.toFixed(2)}</div>
-		<div>y: {clickedPos.y.toFixed(2)}</div>
-	</div>
+	<!-- <textarea class="debugger">x: {clickedPos.x.toFixed(2)}
+y: {clickedPos.y.toFixed(2)}</textarea> -->
 <style>
+.sceneImage {
+	/* opacity: 0.3; */
+}
+.sceneInside {
+	background: black;
+}
 .debugger {
 	position: fixed;
 	right: 10px;
@@ -101,24 +110,53 @@
 }
 .hoverHint {
 	position: absolute;
-	width: 40px;
-	height: 40px;
-	margin: -20px 0 0 -20px;
-	border-radius: 50%;
-	background: rgba(240,130,40,0.5);
-	border: 2px solid orange;
 	cursor: pointer;
+	background: none;
+	/* pointer-events: none; */
 }
 .hoverHint.clicked {
-	border: 2px solid #777;
-	background: rgba(0,0,0,0.2);
+	/* border: 2px solid #777; */
+	/* background: rgba(0,0,0,0.2); */
 }
-.hoverHint:hover {
-	background: rgba(240,130,40,0.8);
+.bigItem:hover {
+	transform: scale(1.008);
+}
+.smallItem:hover {
+	margin-top: -2px;
+}
+.sidehover.smallItem:hover {
+	margin-top: 0px;
+	margin-left: -4px;
 }
 .hoverHint.clicked:hover {
-	background: rgba(0,0,0,0.2);
+	/* background: rgba(0,0,0,0.2); */
 } 
+.updown {
+	animation: updown-animation 3s infinite;
+}
+@keyframes updown-animation {
+  0% {
+	height: 15%;
+  }
+ 
+	20% {
+	  height: 17%;
+	}
+	
+	40% {
+	  height: 15%;
+	}
+	
+	60% {
+	  height: 20%;
+	}
+	80% {
+	  height: 21%;
+	}
+  100% {
+	height: 15%;
+  }
+}
 /* MODALS */
 .modal {
 	font-size: 21px;
@@ -156,7 +194,7 @@
 	cursor: pointer;
 }
 .pulse {
-  animation: pulse-animation 2s infinite;
+  /* animation: pulse-animation 2s infinite; */
 }
 
 @keyframes pulse-animation {
@@ -174,7 +212,7 @@
 }
 
 /* SMALL IMAGE */
-.modal.smallImage img {
+/* .modal.smallImage img {
 	max-width: 120px;
 	float: left;
 	margin-right: 10px;
@@ -183,10 +221,10 @@
 	position: relative;
 	left: 0px;
 	width: calc(100% - 180px);
-}
+} */
 
 /* BIG IMAGE */
-.modal.bigImage img {
+/* .modal.bigImage img {
 	max-width: 600px;
 	width: 100%;
 	margin: 0 auto;
@@ -199,5 +237,16 @@
 	transform: translateX(-50%); 
 	max-width: 600px;
 	text-align: center;
+} */
+
+.modal img {
+	max-width: 120px;
+	float: left;
+	margin-right: 10px;
+}
+.modal .modalWords {
+	position: relative;
+	left: 0px;
+	width: calc(100% - 180px);
 }
 </style>
