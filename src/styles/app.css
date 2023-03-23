@@ -128,6 +128,7 @@ Kimchi styles
 .scene .sceneInside.leftSlide {
 	left: -100%;
 }
+.scene .sceneInside.cutscene { width: 100% !important; }
 @media screen and (min-width: 570px) {
 	.scene .sceneInside {
 		width: 100%;

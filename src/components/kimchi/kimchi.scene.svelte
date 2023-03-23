@@ -71,7 +71,7 @@
 		sceneOffset = sceneOffset;
 	}
 </script>	
-	<div class="sceneInside {sceneOffset}" on:click={getPosition} on:keydown={getPosition}  transition:fade="{{duration: 500}}" use:swipe={{ timeframe: 300, minSwipeDistance: 100 }} on:swipe={swipeHandler} >
+	<div class="sceneInside {sceneOffset}" on:click={getPosition} on:keydown={getPosition}  transition:fade="{{duration: 500}}" use:swipe={{ timeframe: 300, minSwipeDistance: 50 }} on:swipe={swipeHandler} >
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} />
 		
 		{#each hoverHints as hint}
