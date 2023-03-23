@@ -68,8 +68,9 @@
 
 body {
 	font-family: "National 2 Web";
+	background: #EEECE7;
 }
-
+#content {padding: 0 10px; box-sizing: border-box;}
 h1 {
 	font-size: var(--48px, 48px);
 }
@@ -97,30 +98,22 @@ h6 {
 /* ----------
 Kimchi styles
 ---------- */
-.scene {
-	max-width: 1100px;
-	width: 100%;
-	margin: 0 auto;
-	overflow: hidden;	
-	position: relative;
-	margin-bottom: 10vh;
-}
+
 .yearLabel {
 	position: absolute;
-	left: 0px;
-	top: 0px;
-	padding: 4px;
-	background: black;
-	color: white;
+	left: 10px;
+	top: 10px;
+	color: #000;
 	font-size: 27px;
 	z-index: 100;
 }
 .scene .sceneInside {
+	box-sizing: border-box;
 	position: relative;
 	left: 0;
 	top: 0;
 	width: 200%;
-/* 	height: 100%; */
+	height: 100%;
 	max-width: none;
 	transition: all 200ms cubic-bezier(0.420, 0.000, 0.580, 1.000); /* ease-in-out */
 	transition-timing-function: cubic-bezier(0.420, 0.000, 0.580, 1.000); /* ease-in-out */
@@ -132,7 +125,9 @@ Kimchi styles
 @media screen and (min-width: 570px) {
 	.scene .sceneInside {
 		width: 100%;
-		max-height: 90vh;
+	}
+	.scene .sceneInside.leftSlide {
+		left: 0%;
 	}
 }
 .sceneImage {
@@ -142,16 +137,28 @@ Kimchi styles
 .button {
 	position: absolute;
 	right: 20px;
-	bottom: 20px;
-	padding: 20px;
-	background: rgba(0,0,0,0.8);
-	color: white;
-	font-size: 24px;
-	border-radius: 20px;
+	top: 20px;
+	padding: 10px;
+	background: white;
+	border: 2px solid #000;
+	box-shadow: 2px 2px 0px #000;
+	color: black;
+	font-size: 20px;
 	cursor: pointer;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none; 
+	 -khtml-user-select: none; 
+	   -moz-user-select: none; 
+		-ms-user-select: none; 
+			user-select: none;
 }
 .button:hover {
-	background: rgba(0,0,0,0.9);
+	background: #eee;
+}
+.button:active {
+	box-shadow: 0px 0px 0px #000;
+	margin-right: -2px;
+	margin-bottom: -2px;
 }
 .panButton {
 	position: absolute;

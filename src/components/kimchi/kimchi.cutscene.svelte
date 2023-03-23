@@ -39,7 +39,7 @@
 	}
 </script>
 
-<div class="sceneInside cutscene"  transition:fade="{{duration: 500}}" style="background: {cutsceneText["scene" + chapterTracker].color}">
+<div class="sceneInside cutscene" style="background: {cutsceneText["scene" + chapterTracker].color}">
 	<img class="sceneImage" alt="solid color" src="assets/kimchi/cutscene.png" />
 	<div class="text">
 		{cutsceneText["scene" + chapterTracker].words}

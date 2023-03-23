@@ -2,15 +2,29 @@
 	import { fade } from 'svelte/transition';
 	import Scene from "$components/kimchi/kimchi.scene.svelte";
 	import CutScene from "$components/kimchi/kimchi.cutscene.svelte";
-	export let copy;	
+	export let copy;
 	let currentChapter = 1;
-
+	let sceneHeight = 700;
+	let windowWidth = 400;
+	let maxWidth = 1500;
+	
+	// 1100 x 700
 	$: {
 		currentChapter = currentChapter;
+		windowWidth = windowWidth;
+		if (windowWidth >= maxWidth) {
+			sceneHeight = maxWidth * 7/11;
+		} else if (windowWidth > 570) {
+			sceneHeight = (windowWidth-40) * 7/11;
+		} else {
+			sceneHeight = (windowWidth-40) * 14/11;
+		}
+		sceneHeight = sceneHeight;
 	}
+	
 </script>
-
-<div class="scene">
+<svelte:window bind:innerWidth={windowWidth}/>
+<div class="scene" style="height:{sceneHeight}px;">
 	<!-- 1996 -->
 	{#if currentChapter == 1}
 	<Scene chapter="1" year="1996" hoverHints={copy.scene1} bind:chapterTracker={currentChapter}/>
@@ -45,5 +59,13 @@
 </div>
 
 <style>
-
+.scene {
+	max-width: 1500px;
+	width: 100%;
+	margin: 0 auto 50px;
+	overflow: hidden;	
+	position: relative;
+	box-sizing: border-box;
+	border: 2px solid #000;
+}
 </style>
