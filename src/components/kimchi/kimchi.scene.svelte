@@ -1,5 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
+	import { swipe } from 'svelte-gestures';
 	
 	// determines which scene to show
 	export let chapter;
@@ -7,12 +8,22 @@
 	export let hoverHints;
 	export let year;
 	
+	let sceneOffset = "rightSide";
 	let modalShown = false;
 	let allClicked = false;
 	let hed, words, type, image, alt;
 	let fullWidth = 2200/100;
 	
+	let direction;
 	
+	function swipeHandler(event) {
+		if (event.detail.direction == "left") {
+			sceneOffset = "leftSlide";
+		} else {
+			sceneOffset = "rightSide";
+		}
+	}
+	  
 	function showModal(e) {
 		hed = e.target.getAttribute("hed");
 		words = e.target.getAttribute("words");
@@ -57,12 +68,12 @@
 		image = image;
 		allClicked = allClicked;
 		chapterTracker = chapterTracker;
+		sceneOffset = sceneOffset;
 	}
-</script>
-
-	<div class="sceneInside" on:click={getPosition} on:keydown={getPosition}  transition:fade="{{duration: 500}}">
+</script>	
+	<div class="sceneInside {sceneOffset}" on:click={getPosition} on:keydown={getPosition}  transition:fade="{{duration: 500}}" use:swipe={{ timeframe: 300, minSwipeDistance: 100 }} on:swipe={swipeHandler} >
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} />
-		<div class="yearLabel">{year}</div>
+		
 		{#each hoverHints as hint}
 			{#if hint.width > 500}
 				<img class="hoverHint pulse bigItem {hint.addclass}" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" image={hint.image} hed={hint.hed} words={hint.words} type={hint.type} style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal}/>
@@ -70,31 +81,30 @@
 				<img class="hoverHint pulse smallItem {hint.addclass}" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" image={hint.image} hed={hint.hed} words={hint.words} type={hint.type} style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal}/>
 			{/if}
 		{/each}
-		{#if modalShown}
-			<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
-				<button class="closeModal" on:click={closeModal} on:keydown={closeModal}>x</button>
-				<!-- {#if type == "bigImage"}
-				<div class="modalWords">
-					<span class="hed">{hed}</span>
-					<span>{words}</span>
-				</div>
-				<img alt="{alt}" src="assets/kimchi/{image}" />
-				{:else} -->
-				<div class="modalWords">
-					<img alt="{alt}" src="assets/kimchi/{image}" />
-					<span class="hed">{hed}</span>
-					<span>{words}</span>
-				</div>
-				<!-- {/if} -->
-			</div>
-		{/if}
-		<!-- {#if allClicked} -->
-			<button class="button" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
-		<!-- {/if} -->
-		<div class="panButton">PAN</div>
 	</div>
-	<!-- <textarea class="debugger">x: {clickedPos.x.toFixed(2)}
-y: {clickedPos.y.toFixed(2)}</textarea> -->
+	<div class="yearLabel">{year}</div>
+	<div class="panButton">PAN</div>
+	<!-- {#if allClicked} -->
+		<button class="button" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
+	<!-- {/if} -->
+	{#if modalShown}
+		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
+			<button class="closeModal" on:click={closeModal} on:keydown={closeModal}>x</button>
+			<!-- {#if type == "bigImage"}
+			<div class="modalWords">
+				<span class="hed">{hed}</span>
+				<span>{words}</span>
+			</div>
+			<img alt="{alt}" src="assets/kimchi/{image}" />
+			{:else} -->
+			<div class="modalWords">
+				<img alt="{alt}" src="assets/kimchi/{image}" />
+				<span class="hed">{hed}</span>
+				<span>{words}</span>
+			</div>
+			<!-- {/if} -->
+		</div>
+	{/if}
 <style>
 .sceneImage {
 	/* opacity: 0.3; */
@@ -134,6 +144,12 @@ y: {clickedPos.y.toFixed(2)}</textarea> -->
 .updown {
 	animation: updown-animation 3s infinite;
 }
+.updown2 {
+	animation: updown-animation2 3s infinite;
+}
+.snoozing {
+	animation: snoozing-animation 2.5s infinite;
+}
 @keyframes updown-animation {
   0% {
 	height: 15%;
@@ -156,6 +172,48 @@ y: {clickedPos.y.toFixed(2)}</textarea> -->
   100% {
 	height: 15%;
   }
+}
+@keyframes updown-animation2 {
+  0% {
+	margin-top: 0%;
+	height: 50%;
+  }
+  20% {
+	  margin-top: -0.3%;
+	height: 50.3%;
+  }
+  40% {
+	  margin-top: 0.3%;
+	  height: 49.7%;
+	}
+	60% {
+		margin-top: -0.3%;
+	  height: 50.3%;
+	}
+	80% {
+		margin-top: 0.3%;
+	  height: 49.7%;
+	}
+  100% {
+	  margin-top: 0%;
+	  height: 50%;
+	}
+}
+@keyframes snoozing-animation {
+	0% {
+		margin-top: 0%;
+		height: 13%;
+	}
+
+	40% {
+		margin-top: -0.4%;
+		height: 13.4%;
+	}
+
+	100% {
+		height: 13%;
+		margin-top: 0%;
+	}
 }
 /* MODALS */
 .modal {
