@@ -64,6 +64,7 @@
 	
 	function closeModal() {
 		modalShown = false;
+		selectedHint = null;
 		checkAllClicked();
 	}
 	
@@ -251,7 +252,7 @@
 		width: 230px;
 		color: white;
 		padding: 5px 7px;
-		z-index: 9999;
+		z-index: 999;
 		display: none;
 	}
 	.hintContainer.selected .quotebox {
@@ -385,7 +386,7 @@
 		padding: 15px 10px;
 		width: calc(100% - 20px);
 		max-height: 95%;
-		z-index: 5;
+		z-index: 9999;
 	}
 	
 	@media screen and (max-width: 880px) {
