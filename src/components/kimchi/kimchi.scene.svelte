@@ -57,12 +57,12 @@
 				permaQuoteVisibility = false;
 			}
 			responseVisibility = false;
-		}, 2000);
+		}, 5000);
 		
 		/// then in 4 seconds, show the picture again
 		setTimeout(function() {
 			permaQuoteVisibility = true;
-		}, 4000);
+		}, 6000);
 		checkAllClicked();
 	}
 	
@@ -92,8 +92,8 @@
 		
 		if (allClicked) {
 			hintImage = "kimchi.png";
-			nextHintResponse = "Eat kimchi?";
-			hintPrompt = "Eat kimchi?";
+			nextHintResponse = "Almost ready...";
+			hintPrompt = "OK ready! Try kimchi?";
 			hintResponse = nextHintResponse;
 		}
 	}
@@ -210,15 +210,12 @@
 			-ms-user-select: none; 
 				user-select: none;
 	}
-	.hintContainer:hover .bigItem {
-		/* transform: scale(1.008); */
-	}
-	.hintContainer:hover .smallItem {
+	.hintContainer:hover  {
 		margin-top: -2px;
 	}
-	.hintContainer:hover .sidehover.smallItem {
-		margin-top: 0px;
-		margin-left: -4px;
+	.hintContainer.sidehover:hover  {
+		margin-top: 0px !important;
+		margin-left: -4px !important;
 	}
 	
 	.quotebox {
