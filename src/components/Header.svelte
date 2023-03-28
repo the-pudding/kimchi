@@ -19,6 +19,7 @@
 		border: none;
 		display: block;
 		color: var(--color-fg);
+		/* color: #F2E1E1; */
 	}
 
 	.wordmark a:hover {

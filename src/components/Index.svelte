@@ -9,6 +9,14 @@
 		let counter = 0;
 		for (let j in copy[i]) {
 			copy[i][j]["num"] = counter;
+			copy[i][j]["xPos"] = "left";
+			copy[i][j]["yPos"] = "top";
+			if ( (copy[i][j]["x"] > 25 && copy[i][j]["x"] < 50 ) || (copy[i][j]["x"] > 75)) {
+				copy[i][j]["xPos"] = "right"; 
+			}
+			if (copy[i][j]["y"] > 50) {
+				copy[i][j]["yPos"] = "bottom"; 
+			}
 			counter++;
 		}
 	}

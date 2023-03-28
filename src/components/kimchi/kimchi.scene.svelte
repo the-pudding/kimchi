@@ -17,10 +17,12 @@
 		"7": "<p><strong>It's the fall of 2022.</strong> You never learned how to make Grandma's kimchi, but you've figured out how to make your own.</p><p>Does it taste like hers? You don't remember.</p><p>But this is <em>your</em> kimchi. And today is kimchi day.</p>"
 	}
 	let sceneOffset = "rightSide";
+	let displayMode = "display";
 	let modalShown = false;
 	let allClicked = false;
 	let hed, words, type, image, alt;
 	let fullWidth = 2200/100;
+	
 	
 	function swipeHandler(event) {
 		if (event.detail.direction == "left") {
@@ -32,6 +34,7 @@
 	  
 	let selectedHint = null;
 	let nextHint = null;
+	let hintResponse = null;
 	function showModal(e) {
 		hed = e.target.getAttribute("hed");
 		words = e.target.getAttribute("words");
@@ -44,8 +47,9 @@
 			modalShown = true;
 		}
 		// if the right hint is clicked, then show hearts from grandma
-		if (selectedHint == nextHint) {
+		if (selectedHint == nextHint && !allClicked) {
 			responseVisibility = true;
+			hintResponse = nextHintResponse;
 		}
 		// then in 2 second, hide the quotes
 		setTimeout(function() {
@@ -68,8 +72,9 @@
 		checkAllClicked();
 	}
 	
-	let hintText = "♥ ♥ ♥";
+	let nextHintResponse = null;
 	let hintImage = null;
+	let hintPrompt = null;
 	let responseVisibility = false;
 	let permaQuoteVisibility = true;
 	// Checking if all modals have been clicked
@@ -77,21 +82,25 @@
 		allClicked = true;
 		hoverHints.forEach(function(d) {
 			if (d.clicked == "false") {
-				hintText = d.hintText;
 				hintImage = d.image;
+				hintPrompt = d.prompt;
+				nextHintResponse = d.response;
 				allClicked = false;
 				nextHint = d.num;
 			}
 		});
 		
 		if (allClicked) {
-			hintText = "Want to taste kimchi?";
-			hintImage = null;
+			hintImage = "kimchi.png";
+			nextHintResponse = "Eat kimchi?";
+			hintPrompt = "Eat kimchi?";
+			hintResponse = nextHintResponse;
 		}
 	}
 	
 	function nextChapter() {
 		chapterTracker = chapterTracker + 1;
+		displayMode = "none";
 	}
 	
 	let clickedPos = {x:0,y:0};
@@ -106,6 +115,9 @@
 	}
 	
 	$: {
+		if (chapterTracker == chapter) {
+			displayMode = "block";
+		}
 		modalShown = modalShown;
 		hed = hed;
 		words = words;
@@ -117,7 +129,7 @@
 		checkAllClicked();
 	}
 </script>	
-	<div class="sceneInside {sceneOffset}" on:click={getPosition} on:keydown={getPosition}  use:swipe={{ timeframe: 300, minSwipeDistance: 50 }} on:swipe={swipeHandler} >
+	<div class="sceneInside {sceneOffset}" style="display:{displayMode}" on:click={getPosition} on:keydown={getPosition}  use:swipe={{ timeframe: 300, minSwipeDistance: 50 }} on:swipe={swipeHandler}>
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} draggable="false"/>
 		
 		{#each hoverHints as hint}
@@ -127,18 +139,19 @@
 			{:else}
 				<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
 			{/if}
-			{#if hint.addclass == "speaker"}
+			{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker"}
 				{#if permaQuoteVisibility}
-				<div class="quotebox perma" transition:fade>
+				<div class="quotebox perma {hint.xPos}" transition:fade>
 					{#if responseVisibility}
-						<span in:fade>♥ ♥ ♥</span>
+						<span in:fade>{hintResponse}</span>
 					{:else}
-					<img src="assets/kimchi/scene{chapter}/{hintImage}" in:fade/>
+					<img src="assets/kimchi/scene{chapter}/{hintImage}" alt={hint.alt} in:fade/>
+					{hintPrompt}
 					{/if}
 				</div>
 				{/if}
 			{:else if hint.type != "bigImage"}
-				<div class="quotebox" transition:fade>
+				<div class="quotebox {hint.xPos} {hint.yPos}" transition:fade>
 					{hint.words}
 				</div>
 			{/if}
@@ -168,41 +181,6 @@
 	{/if}
 	
 <style>
-	.sceneIntro {
-		position: absolute;
-		z-index: 9999;
-		background: rgb(255,182,0);
-		background: linear-gradient(0deg, rgba(255,182,0,1) 0%, rgba(164,27,10,1) 20%, rgba(92,9,41,1) 62%, rgba(70,3,50,1) 100%);
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		cursor: pointer;
-	}
-	.introWords {
-		position: absolute;
-		top: 50%;
-		transform: translate(-50%, -50%);
-		color: white;
-		padding: 10%;
-		font-size: 2vw;
-		line-height: 3vw;
-		width: 60%;
-		left: 50%;
-	}
-	.introExit {
-		opacity: 0.4;
-		font-size: 0.8em;
-	}
-	@media screen and (max-width: 570px) {
-		.introWords {
-			padding: 10%;
-			font-size: 4vw;
-			line-height: 5.5vw;
-			width: 80%;
-			left: 50%;
-		}
-	}
 	.sceneInside {
 		background: black;
 	}
@@ -233,7 +211,7 @@
 				user-select: none;
 	}
 	.hintContainer:hover .bigItem {
-		transform: scale(1.008);
+		/* transform: scale(1.008); */
 	}
 	.hintContainer:hover .smallItem {
 		margin-top: -2px;
@@ -248,12 +226,29 @@
 		font-size: 15px;
 		position: absolute;
 		bottom: calc(100% + 15px);
-		left: 45%;
-		width: 230px;
+		left: 50%;
+		width: 170px;
 		color: white;
 		padding: 5px 7px;
 		z-index: 999;
 		display: none;
+		text-align: left;
+		line-height: 17px;
+	}
+	.quotebox.top {
+		bottom: auto;
+		top: calc(100% + 15px);
+	}
+	.quotebox.bottom {
+		bottom: calc(100% + 15px);
+		top: auto;
+	}
+	.quotebox.left {
+		left: 10px;
+	}
+	.quotebox.right {
+		left: auto;
+		right: 10px;
 	}
 	.hintContainer.selected .quotebox {
 		display: block;
@@ -262,30 +257,38 @@
 		display: block !important;
 		background: white;
 		color: black;
-		width: auto;
-		padding: 15px;
+		width: 160px;
+		padding: 9px;
 		box-shadow: 0px 0px 45px #000;
+		animation: bounce 3s infinite;
+		pointer-events: none;
 	}
-	.quotebox.perma img {
-		filter: grayscale(100) contrast(100%) brightness(200%);
+	.hintContainer .quotebox.perma img {
+	margin-right: 5px;
 	}
 	.quotebox.perma .response {
 		display: none;
 	}
 	.quotebox .quoteText {
-		/* width: 130px; */
 		display: inline-block;
 		vertical-align: center;
 	}
 	.quotebox img {
-		width: 70px;
-		margin-right: 4px;
+		float: left;
+		width: 40px;
+		margin-right: 7px;
+	}
+	@media screen and (max-width: 620px) {
+		.quotebox img {
+			width: 30px;
+			margin-right: 4px;
+		}
 	}
 	.quotebox::before {
 		content: "";
 		position: absolute;
 		top: 100%;
-		left: 5%;
+		left: calc(50% - 10px);
 		right: 10px;
 		bottom: 10px;
 		width: 0;
@@ -294,6 +297,14 @@
 		border-width: 10px 10px 0 10px;
 		border-color: rgba(0,0,0,0.8) transparent transparent transparent;
 	}
+	.quotebox.top::before  {
+		border-width: 0px 10px 10px 10px;
+		border-color: transparent transparent rgba(0,0,0,0.8) transparent;
+		bottom: 100%;
+		top: auto;
+	}
+	.quotebox.left::before { right: auto; left: 10px; }
+	.quotebox.right::before { left: auto; right: 10px; } 
 	.hintContainer .quotebox.perma::before {
 		border-color: white transparent transparent transparent;
 	}
@@ -307,6 +318,29 @@
 	}
 	.snoozing {
 		animation: snoozing-animation 2.5s infinite;
+	}
+	@keyframes bounce {
+	  0% {
+		margin-bottom: 0px;
+	  }
+	 
+		5% {
+		  margin-bottom: 10px;
+		}
+		
+		10% {
+		  margin-bottom: 0px;
+		}
+		
+		15% {
+		  margin-bottom: 15px;
+		}
+		60% {
+		  margin-bottom: 0px;
+		}
+	  100% {
+		margin-bottom: 0px;
+	  }
 	}
 	@keyframes updown-animation {
   	0% {
@@ -396,7 +430,7 @@
 		}
 	}
 	
-	@media screen and (max-width: 570px) {
+	@media screen and (max-width: 620px) {
 		.modal  {
 			font-size: 16px;
 			line-height: 20px;
