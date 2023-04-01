@@ -3,7 +3,10 @@
 	import Intro from "$components/kimchi/kimchi.intro.svelte";
 	import Scene from "$components/kimchi/kimchi.scene.svelte";
 	import CutScene from "$components/kimchi/kimchi.cutscene.svelte";
+	import Sound from "$components/kimchi/kimchi.sound.svelte";
 	export let copy;
+	
+	let cutsceneText = copy.cutscenes[0];
 	let currentChapter = 0;
 	let sceneHeight = 700;
 	let windowWidth = 400;
@@ -25,34 +28,35 @@
 	
 </script>
 <svelte:window bind:innerWidth={windowWidth}/>
+<Sound />
 <div class="scene" style="height:{sceneHeight}px;">
 	<!-- 1996 -->
 	{#if currentChapter == 0}
-	<Intro chapter="0" bind:chapterTracker={currentChapter}/>
+	<Intro chapter="0" bind:chapterTracker={currentChapter} cutsceneText={cutsceneText} />
 	{/if}
 	<!-- 1996 -->
 	{#if currentChapter == 1}
-	<Scene chapter="1" year="1996" hoverHints={copy.scene1} bind:chapterTracker={currentChapter}/>
+	<Scene chapter="1" year="1996" hoverHints={copy.scene1} bind:chapterTracker={currentChapter} cutsceneText={cutsceneText} />
 	{/if}
 	
 	<!-- 2006 -->
 	{#if currentChapter == 3}
-	<Scene chapter="3" year="2006" hoverHints={copy.scene3} bind:chapterTracker={currentChapter}/>
+	<Scene chapter="3" year="2006" hoverHints={copy.scene3} bind:chapterTracker={currentChapter} cutsceneText={cutsceneText} />
 	{/if}	
 
 	<!-- 2016 -->
 	{#if currentChapter == 5}
-	<Scene chapter="5" year="2016" hoverHints={copy.scene5} bind:chapterTracker={currentChapter}/>
+	<Scene chapter="5" year="2016" hoverHints={copy.scene5} bind:chapterTracker={currentChapter} cutsceneText={cutsceneText} />
 	{/if}	
 
 	<!-- 2022 -->
 	{#if currentChapter == 7}
-	<Scene chapter="7" year="2022" hoverHints={copy.scene7} bind:chapterTracker={currentChapter}/>
+	<Scene chapter="7" year="2022" hoverHints={copy.scene7} bind:chapterTracker={currentChapter} cutsceneText={cutsceneText} />
 	{/if}	
 	
 	<!-- Cut scenes -->
 	{#if [2,4,6,8].includes(currentChapter)}
-		<CutScene chapter={currentChapter} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
+		<CutScene chapter={currentChapter} cutsceneText={cutsceneText} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
 	{/if}
 	
 </div>

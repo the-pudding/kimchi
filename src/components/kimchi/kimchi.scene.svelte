@@ -1,4 +1,5 @@
 <script>
+	import Typewriter from 'svelte-typewriter';
 	import { fade } from 'svelte/transition';
 	import { swipe } from 'svelte-gestures';
 	
@@ -6,16 +7,11 @@
 	export let chapter;
 	export let chapterTracker = Number(chapter);
 	export let hoverHints;
-	export let year;
+	export let cutsceneText;
+	let cutsceneStage = 0;
+	let delayNumber = 800;
+	let stageText = cutsceneText["scene" + chapterTracker].split("\r\n\r\n\r\n");
 	
-	
-	
-	let sceneIntroWords = {
-		"1": "<p><strong>It's the fall of 1995.</strong> You live in Kansas with your Korean family. You walk into the kitchen and find that it's that time of year again.</p><p>Kimchi day.</p>",
-		"3": "<p><strong>It's fall of 2005</strong> – your first year of college. And today, you can't stop thinking about her kimchi.</p><p>But you're thousands of miles from home. And Grandma now lives in Seoul.</p><p>You try to remember how she made her kimchi, and make it in your dorm kitchen.</p>",
-		"5": "<p><strong>It's the fall of 2015</strong> – there are Korean restaurants everywhere in the US, so you can eat kimchi whenever you want.</p><p>Is it Grandma's kimchi? You're not sure. You don't really remember.</p><p>Whatever, let's go eat kimchi.</p>",
-		"7": "<p><strong>It's the fall of 2022.</strong> You never learned how to make Grandma's kimchi, but you've figured out how to make your own.</p><p>Does it taste like hers? You don't remember.</p><p>But this is <em>your</em> kimchi. And today is kimchi day.</p>"
-	}
 	let sceneOffset = "rightSide";
 	let displayMode = "display";
 	let modalShown = false;
@@ -110,11 +106,16 @@
 	}
 	
 	let introShown = true;
-	function exitIntro() {
-		introShown = false;
+	function next() {
+		delayNumber = 0;
+		cutsceneStage++;
+		if (cutsceneStage > stageText.length - 1) {
+			introShown = false;
+		}
 	}
 	
 	$: {
+		cutsceneStage = cutsceneStage;
 		if (chapterTracker == chapter) {
 			displayMode = "block";
 		}
@@ -172,17 +173,20 @@
 	{/if}
 	
 	{#if introShown}
-	<div class="sceneIntro" on:click={exitIntro} on:keyup={exitIntro} out:fade="{{duration: 200}}">
+	<div class="sceneIntro" on:click={next} on:keyup={next} out:fade="{{duration: 200}}">
+		<Typewriter interval={[10,20,5,10,23,5,80,2,5,80,100,10,20,8,14,30]} delay={delayNumber}>
 		<div class="introWords">
-			{@html sceneIntroWords[chapter]}
-			<div class="introExit">[tap to continue]</div>
+			{@html stageText[cutsceneStage]}
+			<!-- <div class="introExit">[tap to continue]</div> -->
 		</div>
+		</Typewriter>
 	</div>
 	{/if}
 	
 <style>
 	.sceneInside {
 		background: black;
+		font-family: "National 2 Web";
 	}
 	.debugger {
 		position: fixed;

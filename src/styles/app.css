@@ -67,7 +67,7 @@
 }
 
 body {
-	font-family: "National 2 Web";
+	font-family: "Tiempos Text Web";
 	background: #EEECE7;
 }
 #content {padding: 0 10px; box-sizing: border-box;}
@@ -188,10 +188,15 @@ Kimchi styles
 	color: white;
 	background: black;
 	padding: 10px;
-	font-size: 2vw;
-	line-height: 3vw;
+	font-size: 18px;
+	line-height: 26px;
 	width: 50%;
 	left: 50%;
+	pointer-events: none;
+	user-select: none;
+}
+.introWords p {
+	margin: 0;
 }
 .introExit {
 	opacity: 0.4;

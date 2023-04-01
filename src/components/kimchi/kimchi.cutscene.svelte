@@ -1,39 +1,36 @@
 <script>
 	import P5 from 'p5-svelte';
 	import { fade } from 'svelte/transition';
+	import Typewriter from 'svelte-typewriter';
 	export let chapter;
 	export let w;
 	export let h;
 	export let maxWidth;
 	export let chapterTracker = Number(chapter);
 	let running = true;
+	let delayNumber = 1000;
 
-	let cutsceneText = {
-		"scene1": {"words":"Psycheldelic kimchi"},
-		"scene2": {
-			"words": "The kimchi flavor reaches deep into my soul. Psychodelic visual representation of Grandma's kimchi. It's beautiful but chaotic."
-		},
-		"scene3": {"words":"","color":""},
-		"scene4": {
-			"words": "The kimchi has no soul, and tastes like the sum of its ingredients. A dull, gray representation of the kimchi flavor. It's both chaotic and dull. Disappointing."
-		},
-		"scene5": {"words":""},
-		"scene6": {
-			"words": "The kimchi is delicious, albeit not Grandma's kimchi. A very ordered and red-only representation of the kimchi. It's beautiful, but also somewhat foreign."
-		},
-		"scene7": {"words":"","color":""},
-		"scene8": {
-			"words": "The kimchi is a mix of Grandma's kimchi, but I've reconstructed it for myself. A very ordered representation of kimchi. It's beautiful, and it's my kimchi."
-		}
-	}
+	export let cutsceneText;
+	let cutsceneStage = 0;
+	let stageText = cutsceneText["scene" + chapterTracker].split("\r\n\r\n\r\n");
+	let opacityAmount = 40;
 
-	function exit() {
-		running = false;
-		if ( chapterTracker < 7) {
-			chapterTracker = chapterTracker + 1;
-		} else {
-			chapterTracker = 0;
+	function next() {
+		delayNumber = 0;
+		cutsceneStage++;
+		opacityAmount = 255;
+		if (cutsceneStage > stageText.length -1) {
+			running = false;
+			if ( chapterTracker < 7) {
+				chapterTracker = chapterTracker + 1;
+			} else {
+				chapterTracker = 0;
+			}
 		}
+		mx = getRandomInt(w);
+		my = getRandomInt(h);
+		xVel = randomIntFromInterval(-90,90);
+		yVel = randomIntFromInterval(-90,90);
 	}
 	
 	let cellSize = 60;
@@ -95,6 +92,7 @@
 							c1[0] *= 1.5;
 							c1[1] *= 1.1;
 							c1[2] *= 1.1; 
+							c1[3] = opacityAmount;
 						}
 						p.fill(c1);
 						p.ellipse(x*cellSize,y*cellSize,cellSize,cellSize);
@@ -133,13 +131,13 @@
 		  }
 	};
 		
-	setInterval(function() {
-		mx = getRandomInt(w);
-		my = getRandomInt(h);
-		xVel = randomIntFromInterval(-90,90);
-		yVel = randomIntFromInterval(-90,90);
-		// randomizer = randomIntFromInterval(-80,80);
-	},1700)
+	// setInterval(function() {
+	// 	mx = getRandomInt(w);
+	// 	my = getRandomInt(h);
+	// 	xVel = randomIntFromInterval(-90,90);
+	// 	yVel = randomIntFromInterval(-90,90);
+	// 	// randomizer = randomIntFromInterval(-80,80);
+	// },1700)
 		
 	function getRandomInt(max) {
 		return Math.floor(Math.random() * max);
@@ -153,6 +151,7 @@
 	  
 	$: {
 		chapterTracker = chapterTracker;
+		cutsceneStage = cutsceneStage;
 		w = w;
 		if (w >= maxWidth) {
 			h = maxWidth * 7/11;
@@ -165,13 +164,15 @@
 	}
 </script>
 <svelte:window bind:innerWidth={w}/>
-<div class="sceneInside cutscene"  on:click={exit} on:keyup={exit} out:fade="{{duration: 200}}">
+<div class="sceneInside cutscene"  on:click={next} on:keyup={next} out:fade="{{duration: 200}}">
 	<div class="visualContainer">
 		<P5 {sketch} />
 	</div>
 	<div class="introWords">
-		{cutsceneText["scene" + chapterTracker].words}
-		<div class="introExit">[tap to continue]</div>
+		<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,100,10,20,8,14,30]}>
+		{stageText[cutsceneStage]}
+		</Typewriter>
+		<!-- <div class="introExit">[tap to continue]</div> -->
 	</div>
 	
 	<!-- {#if chapterTracker < 8}

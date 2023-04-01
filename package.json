@@ -21,6 +21,7 @@
 		"lodash.debounce": "^4.0.8",
 		"lucide-svelte": "^0.108.0",
 		"node-fetch": "^3.3.0",
+		"p5": "^1.6.0",
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.3",
 		"prettier-plugin-svelte": "^2.9.0",
@@ -41,6 +42,12 @@
 	"browserslist": "> 0.5%, last 4 versions, not ie <= 11, not ie_mob <= 11",
 	"subdirectory": "/2023/03/kimchi",
 	"dependencies": {
-		"svelte-gestures": "^1.4.1"
+		"browser-env": "^3.3.0",
+		"p5-svelte": "^3.1.2",
+		"svelte-gestures": "^1.4.1",
+		"svelte-navigator": "^3.2.2",
+		"svelte-typewriter": "^3.1.4",
+		"tone": "^14.7.77",
+		"web-audio-api": "^0.2.2"
 	}
 }
