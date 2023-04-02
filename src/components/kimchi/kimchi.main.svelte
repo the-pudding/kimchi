@@ -28,7 +28,7 @@
 	
 </script>
 <svelte:window bind:innerWidth={windowWidth}/>
-<Sound />
+<Sound bind:chapter={currentChapter}/>
 <div class="scene" style="height:{sceneHeight}px;">
 	<!-- 1996 -->
 	{#if currentChapter == 0}

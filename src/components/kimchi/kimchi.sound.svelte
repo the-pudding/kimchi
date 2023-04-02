@@ -2,32 +2,156 @@
 	import * as Tone from 'tone'
 	import { onMount } from 'svelte';
 	export let chapter;
-	export let chapterTracker = Number(chapter);
 	let synth;
 	let synth2;
 	let now;
 	let mounted = false;
 	let soundon = false;
-	let measure = 1600;
+	let measure = 4000;
 	let scales = ["A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab"];
 	let baseKey = 8;
 	let key = baseKey;
 	let scaleObj = {
-		"major": [0,2,4,5,7,9,11],
-		"minor": [0,2,3,5,7,8,10],
-		"dim": [0,1,3,4,5,7,9,10]
+		"major": [0,2,4,5,7,9,11,12,14,16,17,19,21,23],
+		"minor": [0,2,3,5,7,8,10,12,14,15,17,19,22],
+		"dim": [0,1,3,4,5,7,9,10,12,13,15,16,17,19,21,22],
+		"dorian": [0,2,3,5,7,9,10,12,14,16,17,19,21,22],
+		"aeolian": [0,1,3,5,6,8,10,12,13,15,17,18,20,22]
 	}
 	let currentScale = "major";
 	let progressionStep = 0;
+	// each has 17
+	let chordProgression = {
+		"0": [
+			[5,"major"],
+			[0,"major"],
+			[7,"major"],
+			[5,"major"],
+			[0,"major"],
+			[7,"major"],
+			[5,"major"],
+			[0,"major"],
+			[7,"major"],
+			[2,"minor"],
+			[5,"dorian"],
+			[0,"major"],
+			[7,"major"],
+			[2,"minor"],
+			[5,"dorian"],
+			[0,"major"],
+			[7,"major"]	
+		],
+		"1": [
+			[5,"major"],
+			[0,"major"],
+			[7,"major"],
+			[5,"major"],
+			[0,"major"],
+			[7,"major"],
+			[5,"major"],
+			[0,"major"],
+			[7,"major"],
+			[2,"minor"],
+			[5,"dorian"],
+			[0,"major"],
+			[7,"major"],
+			[2,"minor"],
+			[5,"dorian"],
+			[0,"major"],
+			[7,"major"]	
+		],
+		"2": [
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"]
+		],
+		"3": [
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"]
+		],
+		"4": [
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"]
+		],
+		"5": [
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"],
+			[9,"minor"],
+			[5,"major"],
+			[7,"major"],
+			[0,"major"]
+		]
+	};
 	// let chordProgression = [
 	// 	[1,"minor"]
 	// ]
-	let chordProgression = [
-		[0,"major"],
-		[9,"minor"],
-		[5,"major"],
-		[7,"major"]
-	]
+	// let chordProgression = [
+	// 	[0,"major"],
+	// 	[9,"minor"],
+	// 	[5,"major"],
+	// 	[7,"major"]
+	// ]
+	// let chordProgression = [
+	// 	[0,"dorian"],
+	// 	[2,"major"],
+	// 	[7,"dorian"]
+	// 	[0,"aeolian"]
+	// ];
 	// let chordProgression = [
 	// 	[0,"major"],
 	// 	[5,"major"],
@@ -84,32 +208,39 @@
 
 	let counter = 1;
 	setInterval(function() {		
-		if (counter % 64 == 0) {
+		if (counter % 16 == 0) {
 			progressionStep +=1;
-			if (progressionStep >= chordProgression.length - 1) {
+			if (progressionStep >= chordProgression[chapter].length - 1) {
 				progressionStep = 0;
 			} 
 			
-			key = baseKey + chordProgression[progressionStep][0];
-			currentScale = chordProgression[progressionStep][1];
-			counter = 0;
+			key = baseKey + chordProgression[chapter][progressionStep][0];
+			currentScale = chordProgression[chapter][progressionStep][1];
 		}
 		counter++;
-		
-		playNote("1",measure/32/1000,8,false, true);
-		playNote("2",measure/4/1000,16,true, true);
-		playNote("3",measure/4/1000,8, true, true);
-		//playNote("4",measure/2/1000,16, true, true);
-		
+		if (chapter < 3) {
+			playNote("1",measure/32/1000,1,true, true);
+			playNote("2",measure/32/1000,4,false, true);
+			playNote("3",measure/16/1000,2, true, true);
+			playNote("4",measure/32/1000,1, true, true);
+		} else  {
+			playNote("1",measure/16/1000,2,true, true);
+			playNote("2",measure/1/1000,16,false, true);
+			playNote("3",measure/16/1000,8, true, true);
+			playNote("4",measure/16/1000,4, true, true);
+		}
 		//playChord("3",measure/2/1000,8, true);
-	}, measure/32);
+	}, measure/16);
 	
 	function playNote(pitch,len,interval,rand,chordKey) {
 		if (counter % interval == 0) {
 			let notes = scaleObj[currentScale];
 			let keyShift = notes[Math.floor(notes.length*Math.random())] + key;
 			if (chordKey) {
-				let chordShift = [0,2,4].randFromArray();
+				let chordShift = 0;//[0,2,4,7,9].randFromArray();
+				keyShift = notes[chordShift] + key;
+			} else {
+				let chordShift = Math.floor(Math.cos(counter/4+interval)*6 + 6);
 				keyShift = notes[chordShift] + key;
 			}
 			let m = scales[keyShift];
