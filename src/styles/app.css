@@ -137,7 +137,7 @@ Kimchi styles
 .button {
 	position: absolute;
 	right: 20px;
-	top: 20px;
+	bottom: 20px;
 	padding: 10px;
 	background: white;
 	border: 2px solid #000;

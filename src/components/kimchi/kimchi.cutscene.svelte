@@ -9,15 +9,28 @@
 	export let chapterTracker = Number(chapter);
 	let running = true;
 	let delayNumber = 1000;
+	let blankScreen = 0;
 
 	export let cutsceneText;
 	let cutsceneStage = 0;
 	let stageText = cutsceneText["scene" + chapterTracker].split("\r\n\r\n\r\n");
 	let opacityAmount = 40;
 
+	
+	
+	let typeClick = 0;
+	function resetTypewriter() {
+		typeClick = 1;
+	}
+	
 	function next() {
+		if (typeClick != 0) {
+			cutsceneStage++;
+			typeClick = 0;
+		} else {
+			typeClick++;
+		}
 		delayNumber = 0;
-		cutsceneStage++;
 		opacityAmount = 255;
 		if (cutsceneStage > stageText.length -1) {
 			running = false;
@@ -54,7 +67,7 @@
 		};
 	
 		p.draw = () => {
-			if (running) {
+			if (running ) {
 				if (chapter == 2 || chapter == 8) {
 					p.background([0,0,0,20]);
 				}
@@ -93,6 +106,18 @@
 							c1[1] *= 1.1;
 							c1[2] *= 1.1; 
 							c1[3] = opacityAmount;
+						}
+						if (blankScreen == 1) {
+							c1[0] *= 1.5;
+							c1[1] *= 0;
+							c1[2] *= 0; 
+							c1[3] = opacityAmount*0.1;
+						}
+						if (blankScreen == 2) {
+							c1[0] *= 0.1;
+							c1[1] *= 0;
+							c1[2] *= 0; 
+							//c1[3] = opacityAmount*0.1;
 						}
 						p.fill(c1);
 						p.ellipse(x*cellSize,y*cellSize,cellSize,cellSize);
@@ -160,6 +185,9 @@
 		} else {
 			h = (w-40) * 14/11;
 		}
+		if (stageText[cutsceneStage] == "…") {
+			blankScreen++;
+		}
 		h = h;
 	}
 </script>
@@ -169,9 +197,13 @@
 		<P5 {sketch} />
 	</div>
 	<div class="introWords">
-		<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,100,10,20,8,14,30]}>
+		{#if typeClick == 0}
+		<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,100,10,20,8,14,30]} on:done={resetTypewriter}>
 		{stageText[cutsceneStage]}
 		</Typewriter>
+		{:else}
+			{@html stageText[cutsceneStage]}
+		{/if}
 		<!-- <div class="introExit">[tap to continue]</div> -->
 	</div>
 	
@@ -188,7 +220,8 @@
 </div>
 
 <style>
-.sceneInside {
-	background: black;
-}
+	.cutscene { cursor: pointer; }
+	.sceneInside {
+		background: black;
+	}
 </style>

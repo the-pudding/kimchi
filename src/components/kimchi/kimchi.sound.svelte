@@ -2,6 +2,7 @@
 	import * as Tone from 'tone'
 	import { onMount } from 'svelte';
 	export let chapter;
+	export let mode;
 	let synth;
 	let now;
 	let mounted = false;
@@ -11,7 +12,18 @@
 	let scales = ["A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab"];
 	let baseKey = 8;
 	let key = baseKey;
-	let progressionStep = 0;
+	let progressionStep = -1;
+	let sceneDarkness = {
+		"0": "dark",
+		"1": "dark",
+		"2": "light",
+		"3": "dark",
+		"4": "light",
+		"5": "dark",
+		"6": "light",
+		"7": "dark",
+		"8": "light"
+	}
 	
 	// each has 16
 	let chordProgression = {
@@ -106,22 +118,22 @@
 		  [2,"m"]
 		],
 		"4": [
-		  [2, "m"],
-		  [7, "m"],
-		  [9, "M"],
-		  [4, "M"],
-		  [2, "m"],
-		  [7, "m"],
-		  [9, "M"],
-		  [4, "M"],
-		  [0, "M"],
-		  [5, "M"],
-		  [7, "m"],
-		  [9, "M"],
-		  [0, "M"],
-		  [5, "M"],
-		  [4, "M"],
-		  [0, "M"]
+		  [1, "m7"],
+		  [5, "7"],
+		  [6, "M7"],
+		  [3, "m7"],
+		  [1, "m7"],
+		  [5, "7"],
+		  [6, "M7"],
+		  [3, "m7"],
+		  [0, "M7"],
+		  [5, "m7"],
+		  [9, "m7"],
+		  [3, "m7"],
+		  [0, "M7"],
+		  [5, "m7"],
+		  [9, "m7"],
+		  [3, "m7"],
 		],
 		"5": [
 		  [0, "M"],
@@ -250,20 +262,21 @@
 		}
 	}
 
-	let counter = 1;
+	let counter = 0;
 	let timer = setInterval(song, measure/24);
 	
 	function song() {
 		if (mounted && soundon) {
-			if (counter % 64 == 0) {
+			if (counter % 16 == 0 || counter == 0) {
 				progressionStep +=1;
 				if (progressionStep >= chordProgression[chapter].length - 1) {
 					progressionStep = 0;
 				}
+				key = chordProgression[chapter][progressionStep][0];
+				chord = chordProgression[chapter][progressionStep][1];
+				//console.log(scales[key], chord);
 			}
-			counter++;
-			key = chordProgression[chapter][progressionStep][0];
-			chord = chordProgression[chapter][progressionStep][1];
+			
 			if ([0,1].includes(chapter)) {
 				playNote("1",measure/64/1000,2,true, true);
 				playNote("2",measure/64/1000,2,false, true);
@@ -278,10 +291,10 @@
 				playNote("2",measure/8/1000,4,false, true);
 				playNote("3",measure/32/1000,3, true, false);
 			} else if ([4].includes(chapter)) {
-				playNote("1",measure/16/1000,16,false, true);
-				playNote("2",measure/16/1000,8,false, true);
-				playNote("3",measure/32/1000,16, true, true);
-				playNote("3",measure/32/1000,8, true, false);
+				//playNote("1",measure/64/1000,4,false, true);
+				//playNote("2",measure/4/1000,16,false, true);
+				playNote("2",measure/3/1000,16,false, true);
+				playNote("4",measure/8/1000,4,false, false);
 			} else if ([5,6].includes(chapter)) {
 				playNote("1",measure/16/1000,4,true, true);
 				playNote("2",measure/4/1000,16,false, true);
@@ -295,18 +308,32 @@
 				playNote("2",measure/64/1000,3,false, true);
 				playNote("3",measure/16/1000,8, true, false);
 			}
+		} else if (mounted) {
+			Tone.Transport.pause();
 		}
+		counter++;
 	}
 	
 	function playNote(pitch,len,interval,rand,chordKey) {
 		if (counter % interval == 0 && 64-(counter%64) > len ) {
 			let keyShift = key;
 			if (!chordKey) {
-				keyShift = key + chords[chord].randFromArray();
+				let keyRand = Math.round(Math.abs(Math.cos(counter/2)) * 2);
+				if (keyRand > 2) {
+					len = len * 0.3;
+				}
+				keyShift = key + chords[chord][keyRand];
 			}
 			let m = scales[keyShift];
+			//console.log(m);
 			if (!rand || (rand && Math.random() < 0.5) ) {
-				play(m + pitch, len);
+				if (rand && pitch == "4") {
+					if (counter > 2) {
+						play(m + pitch, len);
+					}
+				} else {
+					play(m + pitch, len);
+				}
 			}
 		}
 	}
@@ -317,22 +344,65 @@
 	}
 	$: {
 		chapter = chapter;
-		
+		soundon = soundon;
+		mode = mode;
 	}
 </script>	
 <div class="soundbar">
 	{#if soundon}
-		<div class="soundbutton" on:keydown={soundToggle} on:click={soundToggle}>Sound off</div>
+		
+			{#if mode}
+			<button class="soundbutton light" on:keydown={soundToggle} on:click={soundToggle}>
+				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-light.png"/>
+			</button>
+			{:else}
+			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
+				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-{sceneDarkness[chapter]}.png"/>
+			</button>
+			{/if}
+		
 	{:else}
-		<div class="soundbutton" on:keydown={soundToggle} on:click={soundToggle}>Sound on</div>
+		
+			{#if mode}
+			<button class="soundbutton light" on:keydown={soundToggle} on:click={soundToggle}>
+				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-light.png"/>
+			</button>
+			{:else}
+			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
+				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-{sceneDarkness[chapter]}.png"/>
+			</button>
+			{/if}
+		
 	{/if}
 </div>
 <style>
 	.soundbar { text-align: right; }
 	.soundbutton {
 		cursor: pointer;
-		color: #333;
 		display: inline-block;
+		position: absolute;
+		right: 20px;
+		top: 20px;
+		/* background: rgba(0,0,0,0.1); */
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		border: 2px solid white;
+		color: white;
+		text-align: center;
+		z-index: 9999;
+		user-select: none;
+		background: none;
+	}
+	.soundbutton.dark {
+		border: 2px solid black;
+	}
+	.soundbutton img {
+		position: absolute;
+		width: 80%;
+		height: 80%;
+		left: 10%;
+		top: 10%;
 	}
 	.soundbutton:hover {
 		color: black;

@@ -105,13 +105,23 @@
 		clickedPos.y = e.offsetY/e.srcElement.height*100;
 	}
 	
-	let introShown = true;
+	export let introShown = true;
+	let typeClick = 0;
 	function next() {
 		delayNumber = 0;
-		cutsceneStage++;
+		if (typeClick != 0) {
+			cutsceneStage++;
+			typeClick = 0;
+		} else {
+			typeClick++;
+		}
 		if (cutsceneStage > stageText.length - 1) {
 			introShown = false;
 		}
+	}
+	
+	function resetTypewriter() {
+		typeClick = 1;
 	}
 	
 	$: {
@@ -127,6 +137,7 @@
 		allClicked = allClicked;
 		chapterTracker = chapterTracker;
 		sceneOffset = sceneOffset;
+		introShown = introShown;
 		checkAllClicked();
 	}
 </script>	
@@ -134,11 +145,13 @@
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} draggable="false"/>
 		
 		{#each hoverHints as hint}
-			<div class="hintContainer {hint.addclass}" class:selected="{selectedHint === hint.num}" style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal} hed={hint.hed} words={hint.words} type={hint.type} num={hint.num}>
-			{#if hint.width > 500}
-				<img class="hoverHint bigItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" image={hint.image}  draggable="false"/>
-			{:else}
-				<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
+			<div class="hintContainer {hint.addclass}" class:selected="{selectedHint === hint.num}" style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal} hed={hint.hed} words={hint.words} type={hint.type} num={hint.num} image={hint.image}>
+			{#if hint.image != undefined}
+				{#if hint.width > 500}
+					<img class="hoverHint bigItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}"   draggable="false"/>
+				{:else}
+					<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
+				{/if}
 			{/if}
 			{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker"}
 				{#if permaQuoteVisibility}
@@ -160,26 +173,32 @@
 		</div>
 		{/each}
 	</div>
-	{#if allClicked}
+	{#if allClicked && chapter != 0}
 		<button class="button" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
 	{/if}
 	{#if modalShown}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
 			<div class="closeModal" on:click={closeModal} on:keydown={closeModal}></div>
 			{#if type == "bigImage"}
-				<img alt="{alt}" src="assets/kimchi/{image}" draggable="false"/>
+				<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image}" draggable="false"/>
+				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image}" draggable="false"/>
 			{/if}
 		</div>
 	{/if}
 	
 	{#if introShown}
 	<div class="sceneIntro" on:click={next} on:keyup={next} out:fade="{{duration: 200}}">
-		<Typewriter interval={[10,20,5,10,23,5,80,2,5,80,100,10,20,8,14,30]} delay={delayNumber}>
+		{#if typeClick == 0}
+		<Typewriter on:done={resetTypewriter} interval={[10,20,5,10,23,5,80,2,5,80,100,10,20,8,14,30]} delay={delayNumber}>
 		<div class="introWords">
 			{@html stageText[cutsceneStage]}
-			<!-- <div class="introExit">[tap to continue]</div> -->
 		</div>
 		</Typewriter>
+		{:else}
+			<div class="introWords">
+				{@html stageText[cutsceneStage]}
+			</div>
+		{/if}
 	</div>
 	{/if}
 	
@@ -187,6 +206,7 @@
 	.sceneInside {
 		background: black;
 		font-family: "National 2 Web";
+		user-select: none;
 	}
 	.debugger {
 		position: fixed;
@@ -410,12 +430,13 @@
 	}
 	/* MODALS */
 	.modal {
+		user-select: none;
 		font-size: 1.8vw;
 		line-height: 2.7vw;
 		position: absolute;
 		left: 10px;
 		bottom: 10px;
-		background: rgba(0,0,0,0.9);
+		background: rgba(0,0,0,0.6);
 		color: white;
 		/* border: 2px solid #000; */
 		padding: 15px 10px;
@@ -423,7 +444,25 @@
 		max-height: 95%;
 		z-index: 9999;
 	}
-	
+	.modal.bigImage {
+		left: 0px;
+		bottom: 0px;
+		width: 100%;
+		height: 100% !important;
+		padding: 0;
+		margin: 0;
+		max-height: none;
+		z-index: 999;
+		
+	}
+	.modal.bigImage img {
+		width: 90%;
+		margin: 3% 5%;
+		/* transform: rotate(1deg); */
+	}
+	.modal .mobileImage {
+		display: none;
+	}
 	@media screen and (max-width: 880px) {
 		.modal  {
 			font-size: 17px;
@@ -435,6 +474,12 @@
 		.modal  {
 			font-size: 16px;
 			line-height: 20px;
+		}
+		.modal .mobileImage {
+			display: block;
+		}
+		.modal .desktopImage {
+			display: none;
 		}
 	}
 	
@@ -467,22 +512,7 @@
 	
 	
 	/* BIG IMAGE */
-	.modal.bigImage {
-		left: 0px;
-		bottom: 0px;
-		width: 100%;
-		height: 100% !important;
-		padding: 0;
-		margin: 0;
-		max-height: none;
-		z-index: 999;
-	}
-	.modal.bigImage img {
-		max-width: none;
-		width: 100%;
-		margin: 0 auto;
-		max-height: 90%;
-	}
+	
 	.modal.bigImage .modalWords {
 		position: absolute;
 		width: 80%;
