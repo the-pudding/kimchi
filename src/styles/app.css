@@ -67,8 +67,8 @@
 }
 
 body {
-	font-family: "Tiempos Text Web";
 	background: #EEECE7;
+	font-family: --var(--serif);
 }
 #content {padding: 0 10px; box-sizing: border-box;}
 @media screen and (max-width: 1200px) {
@@ -173,18 +173,8 @@ Kimchi styles
 
 /* Scene words */
 
-.sceneIntro {
-	position: absolute;
-	z-index: 9999;
-	/* background: black;		 */
-	/* background: linear-gradient(0deg, rgba(255,182,0,1) 0%, rgba(164,27,10,1) 20%, rgba(92,9,41,1) 62%, rgba(70,3,50,1) 100%); */
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-}
 .introWords {
+	/* font-family: "Tiempos Text Web",serif !important; */
 	position: absolute;
 	top: 50%;
 	transform: translate(-50%, -50%);
@@ -199,6 +189,7 @@ Kimchi styles
 	pointer-events: none;
 	user-select: none;
 }
+.introWords div { font-weight: normal !important; }
 .introWords p {
 	margin: 0;
 }
@@ -209,8 +200,6 @@ Kimchi styles
 @media screen and (max-width: 620px) {
 	.introWords {
 		padding: 10px;
-		font-size: 4vw;
-		line-height: 5.5vw;
 		width: 80%;
 		left: 50%;
 	}

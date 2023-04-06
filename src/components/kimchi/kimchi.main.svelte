@@ -15,35 +15,42 @@
 	let soundon = false;
 	setInterval(function() {
 		windowWidth = windowWidth;
-		if (windowWidth >= maxWidth + 20) {
+		if (windowWidth >= maxWidth) {
 			sceneHeight = maxWidth * 7/11;
 		} else if (windowWidth > 620) {
-			sceneHeight = (windowWidth) * 7/11;
+			sceneHeight = (windowWidth+4) * 7/11;
 		} else {
-			sceneHeight = (windowWidth) * 14/11;
+			sceneHeight = (windowWidth+4) * 14/11;
 		}
 		loaded = true;
 	},100);
+	
+	let scrolled = false;
+	let scrolledY = false;
+	let scene;
+	function parseScroll() {
+		if (scene.scrollLeft > 10) {
+			scrolled = true;
+		}
+		
+	}
+	
+	function parseScrollY() {
+		scrolledY = true;
+	}
 	// 1100 x 700
 	$: {
 		currentChapter = currentChapter;
 		windowWidth = windowWidth;
-		if (windowWidth >= maxWidth + 20) {
-			sceneHeight = maxWidth * 7/11;
-		} else if (windowWidth > 620) {
-			sceneHeight = (windowWidth-20) * 7/11;
-		} else {
-			sceneHeight = (windowWidth-20) * 14/11;
-		}
 		sceneHeight = sceneHeight;
 		cutSceneMode = cutSceneMode;
 	}
 	
 </script>
-<svelte:window bind:innerWidth={windowWidth}/>
+<svelte:window bind:innerWidth={windowWidth} on:scroll={parseScrollY}/>
 {#if loaded}
 <Sound bind:chapter={currentChapter} bind:mode={cutSceneMode} bind:soundon={soundon}/>
-<div class="scene" style="height:{sceneHeight}px;" in:fade>
+<div class="scene" bind:this={scene}  style="height:{sceneHeight}px;" in:fade on:scroll={parseScroll} on:mousemove={parseScroll}>
 	<!-- Intro -->
 	{#if currentChapter == 0}
 	<Intro chapter="0" bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth} bind:soundon={soundon}/>
@@ -56,7 +63,7 @@
 	
 	<!-- Main scenes -->
 	{#if [2,5,8,11].includes(currentChapter)}
-		<Scene chapter={currentChapter} hoverHints={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} />
+		<Scene chapter={currentChapter} hoverHints={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} bind:scrolled={scrolled} bind:scrolledY={scrolledY} />
 	{/if}
 		
 	<!-- Cut scenes -->
@@ -70,11 +77,17 @@
 	max-width: 1200px;
 	width: 100%;
 	margin: 0 auto 50px;
-	overflow: hidden;
-	overflow-x: scroll;	
+	overflow-y: hidden;
+	overflow-x: hidden;
+	overscroll-behavior-x: none;
 	position: relative;
 	box-sizing: border-box;
 	border: 2px solid #000;
 	background: black;
+}
+@media screen and (max-width: 620px) {
+	.scene {
+		overflow-x: scroll;
+	}
 }
 </style>

@@ -12,22 +12,6 @@
 	let baseKey = 8;
 	let key = baseKey;
 	let progressionStep = -1;
-	let sceneDarkness = {
-		"0": "dark",
-		"1": "dark",
-		"2": "dark",
-		"3": "light",
-		"4": "light",
-		"5": "dark",
-		"6": "light",
-		"7": "light",
-		"8": "dark",
-		"9": "light",
-		"10": "light",
-		"11": "dark",
-		"12": "dark",
-		"13": "light"
-	}
 	
 	let chordProgressionLookup = {
 		"0": ["happy","anthem"],
@@ -174,15 +158,17 @@
 		now = Tone.now();
 		mounted = true;
 	});
+	
 	function soundToggle() {
 		soundon = !soundon;
+		play("Bb1",2);
 	}
 	
 	function play(n, length) {
 		if (mounted) {
 			if (soundon) {
 				now = Tone.now();
-					synth.triggerAttack(n, now);
+				synth.triggerAttack(n, now);
 			}
 			synth.triggerRelease([n], now + length);
 		}
@@ -220,13 +206,12 @@
 		songPlayed = true;
 		let pitch = song[0];
 		let len = song[1];
-		let  interval = song[2];
+		let interval = song[2];
 		let rand = song[3];
 		let chordKey = song[4];
 		if (counter % interval == 0 && 64-(counter%64) > len ) {
 			let keyShift = key;
 			if (!chordKey) {
-				//let keyRand = melody[chordProgressionLookup[chapter][1]].randFromArray();
 				let keyRand = chords[chord].randFromArray();
 				keyShift = key + keyRand;
 			}
@@ -259,33 +244,35 @@
 	}
 </script>	
 <div class="soundbar">
-			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
-				{#if soundon}
-				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-{sceneDarkness[chapter]}.png"/>
+		<button class="soundbutton" on:keydown={soundToggle} on:click={soundToggle}>
+			{#if soundon}
+				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-dark.png"/>
 				Sound: on
-				{:else}
-				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-{sceneDarkness[chapter]}.png"/>
+			{:else}
+				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-dark.png"/>
 				Sound: off
-				{/if}
-			</button>
+			{/if}
+		</button>
 </div>
 <style>
-	.soundbar { text-align: right; }
+	.soundbar { margin: 0px auto; text-align: right; max-width: 1200px; position: relative; height: 23px; width: 100%;}
 	.soundbutton {
+		position: absolute;
 		cursor: pointer;
 		display: inline-block;
 		/* position: absolute; */
-		left: 0px;
+		right: 0px;
 		top: 0px;
 		/* background: rgba(0,0,0,0.1); */
-		width: 110px;
+		width: 120px;
+		font-size: 18px;
 		border-radius: 0%;
 		color: black;
 		text-align: left;
-		z-index: 9999;
+		z-index: 999;
 		user-select: none;
 		background: none;
-		margin: 0px;
+		margin: 0px auto;
 		padding: 0px 0px 2px;
 	}
 	.soundbutton.light {
@@ -298,6 +285,6 @@
 		float: left;
 	}
 	.soundbutton:hover {
-		opacity: 0.8;
+		opacity: 0.6;
 	}
 </style>

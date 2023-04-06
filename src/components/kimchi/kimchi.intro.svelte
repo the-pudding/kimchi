@@ -40,15 +40,14 @@
 		{/if}
 		<div class="buttonContainer">
 		<button class="start" on:click={start} on:keydown={start}>Start</button>
-		<br>
-		<button class="sound" on:click={soundtoggle} on:keydown={soundtoggle}>
+				<button class="sound" on:click={soundtoggle} on:keydown={soundtoggle}>
 			{#if soundon}
 			Sound: on
 			{:else}
 			Sound: off
 			{/if}
 		</button>
-		<br>
+		
 		<button class="credits" on:click={credits} on:keydown={credits}>Credits</button>
 	</div>
 		
@@ -78,6 +77,7 @@
 		top: 50%;
 	}
 	.mainImage button {
+		display:block;
 		width: 150px;
 		border: 2px solid #000;
 		background: white;
@@ -94,5 +94,10 @@
 	} 
 	.mainImage button:hover {
 		background: #eee;
+	}
+	@media screen and (max-width: 620px) {
+		.sound {
+			display: none !important;
+		}
 	}
 </style>

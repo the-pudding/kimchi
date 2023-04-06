@@ -18,15 +18,8 @@
 	let fullWidth = 2200/100;
 	let bounce = "bounce";
 	let swipeInteracted = false;
-	
-	function swipeHandler(event) {
-		swipeInteracted = true;
-		// if (event.detail.direction == "left") {
-		// 	sceneOffset = "leftSlide";
-		// } else {
-		// 	sceneOffset = "rightSide";
-		// }
-	}
+	export let scrolled;
+	export let scrolledY;
 	  
 	let selectedHint = null;
 	let nextHint = null;
@@ -40,6 +33,7 @@
 		selectedHint = Number(e.target.getAttribute("num"));
 		hoverHints[selectedHint].clicked = true;
 		if (type == "bigImage") {
+			scrolledY = false;
 			modalShown = true;
 		}
 		// if the right hint is clicked, then show hearts from grandma
@@ -128,8 +122,8 @@
 		sceneOffset = sceneOffset;
 		checkAllClicked();
 	}
-</script>	
-	<div class="sceneInside {sceneOffset}" style="display:{displayMode}" on:click={getPosition} on:keydown={getPosition}  use:swipe={{ timeframe: 300, minSwipeDistance: 50 }} on:swipe={swipeHandler} in:fade>
+</script>
+	<div class="sceneInside {sceneOffset}" style="display:{displayMode}" on:click={getPosition} on:keydown={getPosition} in:fade>
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} draggable="false"/>
 		
 		{#each hoverHints as hint}
@@ -165,7 +159,7 @@
 	{#if readyForNext && [2,5,8,11].includes(chapter)}
 		<button class="button bounce" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
 	{/if}
-	{#if modalShown}
+	{#if modalShown && !scrolledY}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
 			{#if type == "bigImage"}
 				<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image}" draggable="false"/>
@@ -174,13 +168,13 @@
 			<div class="closeModal">Tap to exit</div>
 		</div>
 	{/if}
-	{#if !swipeInteracted}
-		<div class="swipeHint"></div>
+	{#if !scrolled}
+		<div class="swipeHint" out:fade></div>
 	{/if}
 <style>
 	.sceneInside {
 		background: black;
-		font-family: "National 2 Web";
+		font-family: var(--sans);
 		user-select: none;
 	}
 	.debugger {
@@ -411,15 +405,16 @@
 		font-size: 1.8vw;
 		line-height: 2.7vw;
 		position: absolute;
-		left: 10px;
-		bottom: 10px;
-		background: rgba(0,0,0,0.6);
+		left: 50%;
+		bottom: 50%;
+		/* transform: translate(-50%, -50%); */
+		background: rgba(0,0,0,0.8);
 		color: white;
 		/* border: 2px solid #000; */
 		padding: 15px 10px;
 		width: calc(100% - 20px);
 		max-height: 95%;
-		z-index: 9999;
+		z-index: 99999;
 	}
 	.modal.bigImage {
 		left: 0px;
@@ -433,8 +428,11 @@
 		
 	}
 	.modal.bigImage img {
-		width: 90%;
-		margin: 3% 5%;
+		width: 100%;
+		left: 0%;
+		top: 50%;
+		position: absolute;
+		transform: translate(0%, -50%);
 		/* transform: rotate(1deg); */
 	}
 	.modal .mobileImage {
@@ -451,6 +449,7 @@
 		.modal  {
 			font-size: 16px;
 			line-height: 20px;
+			position: fixed;
 		}
 		.modal .mobileImage {
 			display: block;
@@ -472,8 +471,9 @@
 	}
 	.closeModal {
 		position: absolute;
-		left: 5%;
-		top: 2px;
+		left: 50%;
+		transform: translateX(-50%);
+		top: 30px;
 		color: white;
 		/* width: 0;
 		height: 0; */
@@ -518,7 +518,7 @@
 		transform: translateX(-50%);
 		background: rgba(0,0,0,0.5);
 		border-radius: 50%;
-		animation: swipe-animation 2.5s infinite;
+		animation: swipe-animation 1.5s infinite;
 		display: none;
 	}
 	@media screen and (max-width: 620px) {
@@ -529,11 +529,7 @@
 			left: 70%;
 		}
 	
-		40% {
-			left: 20%;
-		}
-		
-		90% {
+		70% {
 			left: 20%;
 		}
 
