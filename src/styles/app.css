@@ -173,7 +173,7 @@ Kimchi styles
 .sceneIntro {
 	position: absolute;
 	z-index: 9999;
-	background: black;		
+	/* background: black;		 */
 	/* background: linear-gradient(0deg, rgba(255,182,0,1) 0%, rgba(164,27,10,1) 20%, rgba(92,9,41,1) 62%, rgba(70,3,50,1) 100%); */
 	left: 0;
 	top: 0;
@@ -186,10 +186,11 @@ Kimchi styles
 	top: 50%;
 	transform: translate(-50%, -50%);
 	color: white;
-	background: black;
+	text-shadow: -1px 0px 6px rgba(0, 0, 0, 1);
+	/* background: black; */
 	padding: 10px;
-	font-size: 18px;
-	line-height: 26px;
+	font-size: 20px;
+	line-height: 28px;
 	width: 50%;
 	left: 50%;
 	pointer-events: none;

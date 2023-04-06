@@ -6,8 +6,13 @@
 	export let w;
 	export let h;
 	export let maxWidth;
+	export let soundon;
 	function start() {
 		chapterTracker = chapterTracker + 1;
+	}
+	
+	function soundtoggle() {
+		soundon = !soundon;
 	}
 	$: {
 		w = w;
@@ -27,7 +32,18 @@
 	{:else}
 		<img src="assets/kimchi/universal/main-mobile.jpg"/>
 	{/if}
-	<button on:click={start} on:keydown={start}>Start</button>
+	<div class="buttonContainer">
+	<button class="start" on:click={start} on:keydown={start}>Start</button>
+	<br>
+	<button class="sound" on:click={soundtoggle} on:keydown={soundtoggle}>
+		{#if soundon}
+		Sound on
+		{:else}
+		Sound off
+		{/if}
+	</button>
+</div>
+	
 </div>
 	
 
@@ -47,17 +63,28 @@
 		width: 100%;
 		height: 100%;
 	}
-	.mainImage button {
+	.buttonContainer {
 		z-index: 9999;
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
 		bottom: 40%;
+	}
+	.mainImage button {
+		width: 150px;
 		border: 2px solid #000;
 		background: white;
 		font-weight: bold;
+		text-transform: uppercase;
 		font-size: 20px;
+		margin: 0px;
+		margin-bottom: 20px;
+		box-shadow:4px 0px 0px #000;
 	}
+	.mainImage button:active {
+		box-shadow: 0px 0px 0px #000;
+		margin-left: 4px;
+	} 
 	.mainImage button:hover {
 		background: #eee;
 	}

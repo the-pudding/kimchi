@@ -7,17 +7,16 @@
 	export let chapter;
 	export let chapterTracker = Number(chapter);
 	export let hoverHints;
-	export let cutsceneText;
 	let cutsceneStage = 0;
 	let delayNumber = 800;
-	let stageText = cutsceneText["scene" + chapterTracker].split("\r\n\r\n\r\n");
-	
 	let sceneOffset = "rightSide";
 	let displayMode = "display";
 	let modalShown = false;
 	let allClicked = false;
+	let readyForNext = false;
 	let hed, words, type, image, alt;
 	let fullWidth = 2200/100;
+	let bounce = "bounce";
 	
 	
 	function swipeHandler(event) {
@@ -58,6 +57,10 @@
 		/// then in 4 seconds, show the picture again
 		setTimeout(function() {
 			permaQuoteVisibility = true;
+			if (allClicked) {
+				readyForNext = true;
+				bounce = "";
+			}
 		}, 6000);
 		checkAllClicked();
 	}
@@ -88,8 +91,8 @@
 		
 		if (allClicked) {
 			hintImage = "kimchi.png";
-			nextHintResponse = "Almost ready...";
-			hintPrompt = "OK ready! Try kimchi?";
+			nextHintResponse = ["Almost ready. Explore while you wait.","Kimchi coming soon. Look around!","You can try kimchi soon. Try clicking other things!","Kimchi is nearly done!","Kimchi is coming. Click around for a bit!","Give the kimchi a few more seconds.","Be patient! Kimchi coming soon."].randFromArray();
+			hintPrompt = ["Kimchi is ready!","Kimchi ready! Click on the bottom-right button.","Let's eat kimchi!","Let's try some kimchi now.","You want to try some kimchi now?","Taste some kimchi!","Let's try the kimchi."].randFromArray();
 			hintResponse = nextHintResponse;
 		}
 	}
@@ -105,23 +108,8 @@
 		clickedPos.y = e.offsetY/e.srcElement.height*100;
 	}
 	
-	export let introShown = true;
-	let typeClick = 0;
-	function next() {
-		delayNumber = 0;
-		if (typeClick != 0) {
-			cutsceneStage++;
-			typeClick = 0;
-		} else {
-			typeClick++;
-		}
-		if (cutsceneStage > stageText.length - 1) {
-			introShown = false;
-		}
-	}
-	
-	function resetTypewriter() {
-		typeClick = 1;
+	Array.prototype.randFromArray = function(){
+	  return this[Math.floor(chapter/13*this.length)];
 	}
 	
 	$: {
@@ -137,11 +125,10 @@
 		allClicked = allClicked;
 		chapterTracker = chapterTracker;
 		sceneOffset = sceneOffset;
-		introShown = introShown;
 		checkAllClicked();
 	}
 </script>	
-	<div class="sceneInside {sceneOffset}" style="display:{displayMode}" on:click={getPosition} on:keydown={getPosition}  use:swipe={{ timeframe: 300, minSwipeDistance: 50 }} on:swipe={swipeHandler}>
+	<div class="sceneInside {sceneOffset}" style="display:{displayMode}" on:click={getPosition} on:keydown={getPosition}  use:swipe={{ timeframe: 300, minSwipeDistance: 50 }} on:swipe={swipeHandler} in:fade>
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} draggable="false"/>
 		
 		{#each hoverHints as hint}
@@ -155,7 +142,8 @@
 			{/if}
 			{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker"}
 				{#if permaQuoteVisibility}
-				<div class="quotebox perma {hint.xPos}" transition:fade>
+				
+				<div class="quotebox perma {bounce} {hint.xPos}" transition:fade>
 					{#if responseVisibility}
 						<span in:fade>{hintResponse}</span>
 					{:else}
@@ -173,8 +161,8 @@
 		</div>
 		{/each}
 	</div>
-	{#if allClicked && chapter != 0}
-		<button class="button" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
+	{#if readyForNext && [2,5,8,11].includes(chapter)}
+		<button class="button bounce" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
 	{/if}
 	{#if modalShown}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
@@ -184,22 +172,6 @@
 				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image}" draggable="false"/>
 			{/if}
 		</div>
-	{/if}
-	
-	{#if introShown}
-	<div class="sceneIntro" on:click={next} on:keyup={next} out:fade="{{duration: 200}}">
-		{#if typeClick == 0}
-		<Typewriter on:done={resetTypewriter} interval={[10,20,5,10,23,5,80,2,5,80,100,10,20,8,14,30]} delay={delayNumber}>
-		<div class="introWords">
-			{@html stageText[cutsceneStage]}
-		</div>
-		</Typewriter>
-		{:else}
-			<div class="introWords">
-				{@html stageText[cutsceneStage]}
-			</div>
-		{/if}
-	</div>
 	{/if}
 	
 <style>
@@ -281,9 +253,9 @@
 		width: 160px;
 		padding: 9px;
 		box-shadow: 0px 0px 45px #000;
-		animation: bounce 3s infinite;
 		pointer-events: none;
 	}
+	.bounce {animation: bounce 3s infinite;}
 	.hintContainer .quotebox.perma img {
 	margin-right: 5px;
 	}

@@ -6,18 +6,20 @@
 
 	const copy = getContext("copy");
 	for (let i in copy) {
-		let counter = 0;
-		for (let j in copy[i]) {
-			copy[i][j]["num"] = counter;
-			copy[i][j]["xPos"] = "left";
-			copy[i][j]["yPos"] = "top";
-			if ( (copy[i][j]["x"] > 25 && copy[i][j]["x"] < 50 ) || (copy[i][j]["x"] > 75)) {
-				copy[i][j]["xPos"] = "right"; 
+		if (copy[i][0].type != undefined) {
+			let counter = 0;
+			for (let j in copy[i]) {
+				copy[i][j]["num"] = counter;
+				copy[i][j]["xPos"] = "left";
+				copy[i][j]["yPos"] = "top";
+				if ( (copy[i][j]["x"] > 25 && copy[i][j]["x"] < 50 ) || (copy[i][j]["x"] > 75)) {
+					copy[i][j]["xPos"] = "right"; 
+				}
+				if (copy[i][j]["y"] > 50) {
+					copy[i][j]["yPos"] = "bottom"; 
+				}
+				counter++;
 			}
-			if (copy[i][j]["y"] > 50) {
-				copy[i][j]["yPos"] = "bottom"; 
-			}
-			counter++;
 		}
 	}
 	// const data = getContext("data");

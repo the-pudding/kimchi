@@ -65,23 +65,13 @@
 			p.createCanvas(w, h);
 			p.background(0);
 			p.noStroke();
-			if (chapter != 12) {
-				img = p.loadImage(`assets/kimchi/kimchibg.png`);
-			} else {
-				img = p.loadImage(`assets/kimchi/kimchibg-2.png`);
-			}
-			
+			img = p.loadImage(`assets/kimchi/kimchibg.png`);
 			p.frameRate(20);
 		};
 	
 		p.draw = () => {
 			if (running ) {
-				if (chapter == 12 && blankScreen == 2) {
-					p.background([255,255,255, 40]);
-				} else if (chapter == 3 || chapter == 12) {
-					p.background([100,0,40,10]);
-				}
-				
+				p.background([0,0,0,2]);
 				for (let x = 0; x < w/cellSize; x += 1) {
 					for (let y = 0; y < h/cellSize; y += 1) {
 						let xCoord = (x*cellSize/w * img.width);
@@ -95,50 +85,37 @@
 							randomSeeker = Math.round(img.width/cellSize);
 						}
 						let c1 = img.get(xCoord, yCoord);
-						cellSize = w/100 + Math.round(dist*20);
-						if (chapter == 3) {
-							c1[3] = 20;
-						}
-						if (chapter == 6) {
-							c1[0] *= 0.1;
-							c1[1] *= 0.7;
-							c1[2] *= 0.7; 
+						cellSize = w/40 + Math.round(dist*10);
+						
+						if (chapter == 1) {
+							c1[0] *= 1.5;
+							c1[1] *= 3;
+							c1[2] *= 3; 
 							c1[3] = 10;
 						}
-						if (chapter == 9) {
+						if (chapter == 4) {
 							c1[0] *= 1.1;
 							c1[1] *= 0.6;
 							c1[2] *= 0.6; 
 							c1[3] = 20;
 							cellSize *= 1.4;
 						}
-						if (chapter == 12) {
-							c1[0] *= 1.5;
-							c1[1] *= 1.1;
-							c1[2] *= 1.1; 
-							c1[3] = 20;
+						if (chapter == 7) {
+							c1[0] *= 0.1;
+							c1[1] *= 0.3;
+							c1[2] *= 0.4; 
+							c1[3] = 25;
 						}
-						if (blankScreen == 1) {
-							c1[0] *= 1.5;
-							c1[1] *= 0;
-							c1[2] *= 0; 
-							c1[3] = opacityAmount*0.1;
-						}
-						if (blankScreen == 2) {
-							c1[0] *= 0.2;
+						if (chapter == 10) {
+							c1[0] *= 0.7;
 							c1[1] *= 0.2;
-							c1[2] *= 0.1; 
-							c1[3] = opacityAmount*0.005;
-							cellSize = w/50;
+							c1[2] *= 1.8; 
+							c1[3] = 8;
 						}
+						
 						p.fill(c1);
-						let x1 = x*cellSize;
-						let y1 = y*cellSize;
-						let quadRand = dist*90*Math.random();
-						let quadRand2 = dist*90*Math.random();
-						let quadRand3 = dist*90*Math.random();
-						p.quad(x1-quadRand2,y1-quadRand3,x1+cellSize-quadRand2,y1-quadRand3,x1+quadRand*2,y1+cellSize,x1-quadRand,y1+cellSize+quadRand)
-						//p.ellipse(x*cellSize,y*cellSize,cellSize,cellSize);
+						let rand = dist*90*Math.random();
+						p.ellipse(x*cellSize,y*cellSize,cellSize*1.2+rand,cellSize*1.2+rand);
 						//p.rect(x*cellSize,y*cellSize,cellSize,cellSize);
 					}
 			  	}
@@ -148,10 +125,8 @@
 		};
 		
 		function getDistance(x,y,bx,by) {
-			bx = bx + Math.sin(counter/10)*200;
-			if (chapter == 8) {
-				by = by + Math.cos(counter/10)*200;
-			}
+			bx = bx + Math.sin(counter/chapter)*chapter*10;
+			by = by + Math.cos(counter/chapter)*chapter*10;
 			var a = x - bx;
 			var b = y - by;
 			return Math.sqrt( a*a + b*b ) / diagonalLength;
@@ -207,14 +182,18 @@
 		<P5 {sketch} />
 	</div>
 	<div class="introWords">
-		{#if typeClick == 0}
-		<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,14,10,20,8,14,30]}  on:done={resetTypewriter}>
-		{stageText[cutsceneStage]}
-		</Typewriter>
-		{:else}
-			{@html stageText[cutsceneStage]}
+		{#if stageText[cutsceneStage] != undefined}
+			{#if typeClick == 0}
+			<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,14,10,20,8,14,30]} delay={delayNumber} on:done={resetTypewriter}>
+			{stageText[cutsceneStage]}
+			</Typewriter>
+			{:else}
+				{@html stageText[cutsceneStage]}
+			{/if}
 		{/if}
 	</div>
+	
+
 </div>
 
 <style>
