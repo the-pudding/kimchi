@@ -17,14 +17,15 @@
 	let hed, words, type, image, alt;
 	let fullWidth = 2200/100;
 	let bounce = "bounce";
-	
+	let swipeInteracted = false;
 	
 	function swipeHandler(event) {
-		if (event.detail.direction == "left") {
-			sceneOffset = "leftSlide";
-		} else {
-			sceneOffset = "rightSide";
-		}
+		swipeInteracted = true;
+		// if (event.detail.direction == "left") {
+		// 	sceneOffset = "leftSlide";
+		// } else {
+		// 	sceneOffset = "rightSide";
+		// }
 	}
 	  
 	let selectedHint = null;
@@ -92,7 +93,7 @@
 		if (allClicked) {
 			hintImage = "kimchi.png";
 			nextHintResponse = ["Almost ready. Explore while you wait.","Kimchi coming soon. Look around!","You can try kimchi soon. Try clicking other things!","Kimchi is nearly done!","Kimchi is coming. Click around for a bit!","Give the kimchi a few more seconds.","Be patient! Kimchi coming soon."].randFromArray();
-			hintPrompt = ["Kimchi is ready!","Kimchi ready! Click on the bottom-right button.","Let's eat kimchi!","Let's try some kimchi now.","You want to try some kimchi now?","Taste some kimchi!","Let's try the kimchi."].randFromArray();
+			hintPrompt = ["Kimchi is ready!","Kimchi ready! Click the button.","Let's eat kimchi!","Let's try some kimchi now.","You want to try some kimchi now?","Taste some kimchi!","Let's try the kimchi."].randFromArray();
 			hintResponse = nextHintResponse;
 		}
 	}
@@ -166,14 +167,16 @@
 	{/if}
 	{#if modalShown}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
-			<div class="closeModal" on:click={closeModal} on:keydown={closeModal}></div>
 			{#if type == "bigImage"}
 				<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image}" draggable="false"/>
 				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image}" draggable="false"/>
 			{/if}
+			<div class="closeModal">Tap to exit</div>
 		</div>
 	{/if}
-	
+	{#if !swipeInteracted}
+		<div class="swipeHint"></div>
+	{/if}
 <style>
 	.sceneInside {
 		background: black;
@@ -215,18 +218,19 @@
 	}
 	
 	.quotebox {
-		background: rgba(0,0,0,0.8);
+		background: rgba(235,204,253,1);
 		font-size: 15px;
 		position: absolute;
 		bottom: calc(100% + 15px);
 		left: 50%;
 		width: 170px;
-		color: white;
+		color: #480073;
 		padding: 5px 7px;
 		z-index: 999;
 		display: none;
 		text-align: left;
 		line-height: 17px;
+		box-shadow: 0px 0px 20px #35283D;
 	}
 	.quotebox.top {
 		bottom: auto;
@@ -288,11 +292,11 @@
 		height: 0;
 		border-style: solid;
 		border-width: 10px 10px 0 10px;
-		border-color: rgba(0,0,0,0.8) transparent transparent transparent;
+		border-color: rgba(235,204,253,1) transparent transparent transparent;
 	}
 	.quotebox.top::before  {
 		border-width: 0px 10px 10px 10px;
-		border-color: transparent transparent rgba(0,0,0,0.8) transparent;
+		border-color: transparent transparent rgba(235,204,253,1) transparent;
 		bottom: 100%;
 		top: auto;
 	}
@@ -402,6 +406,7 @@
 	}
 	/* MODALS */
 	.modal {
+		cursor: pointer;
 		user-select: none;
 		font-size: 1.8vw;
 		line-height: 2.7vw;
@@ -467,13 +472,17 @@
 	}
 	.closeModal {
 		position: absolute;
-		right: 10px;
-		bottom: 10px;
-		width: 0;
-		height: 0;
-		border-style: solid;
+		left: 5%;
+		top: 2px;
+		color: white;
+		/* width: 0;
+		height: 0; */
+		font-family: "National 2 Web",sans-serif;
+		font-size: 16px;
+		z-index: 1000;
+		/* border-style: solid;
 		border-width: 10px 10px 0 10px;
-		border-color: #fff transparent transparent transparent;
+		border-color: #fff transparent transparent transparent; */
 	}
 	
 	
@@ -498,5 +507,38 @@
 		position: relative;
 		left: 0px;
 		width: 100%;
+	}
+	
+	.swipeHint {
+		position: absolute;
+		left: 70%;
+		bottom: 25%;
+		width: 50px;
+		height: 50px;
+		transform: translateX(-50%);
+		background: rgba(0,0,0,0.5);
+		border-radius: 50%;
+		animation: swipe-animation 2.5s infinite;
+		display: none;
+	}
+	@media screen and (max-width: 620px) {
+		.swipeHint { display: block; }
+	}
+	@keyframes swipe-animation{
+		0% {
+			left: 70%;
+		}
+	
+		40% {
+			left: 20%;
+		}
+		
+		90% {
+			left: 20%;
+		}
+
+		100% {
+			left: 70%;
+		}
 	}
 </style>

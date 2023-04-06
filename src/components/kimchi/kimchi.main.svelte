@@ -6,7 +6,7 @@
 	import PreScene from "$components/kimchi/kimchi.prescene.svelte";
 	import Sound from "$components/kimchi/kimchi.sound.svelte";
 	export let copy;
-	
+	let loaded = false;
 	let currentChapter = 0;
 	let sceneHeight = 700;
 	let windowWidth = 400;
@@ -18,10 +18,11 @@
 		if (windowWidth >= maxWidth + 20) {
 			sceneHeight = maxWidth * 7/11;
 		} else if (windowWidth > 620) {
-			sceneHeight = (windowWidth-20) * 7/11;
+			sceneHeight = (windowWidth) * 7/11;
 		} else {
-			sceneHeight = (windowWidth-20) * 14/11;
+			sceneHeight = (windowWidth) * 14/11;
 		}
+		loaded = true;
 	},100);
 	// 1100 x 700
 	$: {
@@ -40,15 +41,16 @@
 	
 </script>
 <svelte:window bind:innerWidth={windowWidth}/>
-
-<div class="scene" style="height:{sceneHeight}px;">
+{#if loaded}
+<Sound bind:chapter={currentChapter} bind:mode={cutSceneMode} bind:soundon={soundon}/>
+<div class="scene" style="height:{sceneHeight}px;" in:fade>
 	<!-- Intro -->
 	{#if currentChapter == 0}
-	<Intro chapter="0" bind:chapterTracker={currentChapter} bind:introShown={cutSceneMode} w={windowWidth} h={sceneHeight} maxWidth={maxWidth} bind:soundon={soundon}/>
+	<Intro chapter="0" bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth} bind:soundon={soundon}/>
 	{/if}
 	
 	<!-- Pre scenes -->
-	{#if [1,4,7,10].includes(currentChapter)}
+	{#if [1,4,7,10,13].includes(currentChapter)}
 		<PreScene chapter={currentChapter} cutsceneText={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
 	{/if}
 	
@@ -61,15 +63,15 @@
 	{#if [3,6,9,12].includes(currentChapter)}
 		<CutScene chapter={currentChapter} cutsceneText={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
 	{/if}
-	<Sound bind:chapter={currentChapter} bind:mode={cutSceneMode} bind:soundon={soundon}/>
 </div>
-
+{/if}
 <style>
 .scene {
 	max-width: 1200px;
 	width: 100%;
 	margin: 0 auto 50px;
-	overflow: hidden;	
+	overflow: hidden;
+	overflow-x: scroll;	
 	position: relative;
 	box-sizing: border-box;
 	border: 2px solid #000;

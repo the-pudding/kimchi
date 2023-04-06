@@ -71,6 +71,9 @@ body {
 	background: #EEECE7;
 }
 #content {padding: 0 10px; box-sizing: border-box;}
+@media screen and (max-width: 1200px) {
+	#content {padding: 0 0px; width: calc(100% + 4px); margin-left: -2px;}
+}
 h1 {
 	font-size: var(--48px, 48px);
 }

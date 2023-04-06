@@ -36,7 +36,7 @@
 			
 			if (cutsceneStage > stageText.length - 1) {
 				running = false;
-				if ( chapterTracker < 14) {
+				if ( chapterTracker < 13) {
 					chapterTracker = chapterTracker + 1;
 				} else {
 					chapterTracker = 0;
@@ -65,7 +65,13 @@
 			p.createCanvas(w, h);
 			p.background(0);
 			p.noStroke();
-			img = p.loadImage(`assets/kimchi/kimchibg.png`);
+			if (chapter == 1) {
+				img = p.loadImage(`assets/kimchi/bg-1.jpg`);
+			} else if (chapter < 12) {
+				img = p.loadImage(`assets/kimchi/kimchibg.png`);
+			} else {
+				img = p.loadImage(`assets/kimchi/kimchibg-2.png`);
+			}
 			p.frameRate(20);
 		};
 	
@@ -88,10 +94,10 @@
 						cellSize = w/40 + Math.round(dist*10);
 						
 						if (chapter == 1) {
-							c1[0] *= 1.5;
-							c1[1] *= 3;
-							c1[2] *= 3; 
-							c1[3] = 10;
+							// c1[0] *= 0.6;
+							// c1[1] *= 0.6;
+							// c1[2] *= 0.4; 
+							c1[3] = 8;
 						}
 						if (chapter == 4) {
 							c1[0] *= 1.1;
@@ -112,7 +118,12 @@
 							c1[2] *= 1.8; 
 							c1[3] = 8;
 						}
-						
+						if (chapter == 13) {
+							c1[0] *= 0.1;
+							c1[1] *= 0.1;
+							c1[2] *= 1.1; 
+							c1[3] = 20;
+						}
 						p.fill(c1);
 						let rand = dist*90*Math.random();
 						p.ellipse(x*cellSize,y*cellSize,cellSize*1.2+rand,cellSize*1.2+rand);
@@ -125,8 +136,8 @@
 		};
 		
 		function getDistance(x,y,bx,by) {
-			bx = bx + Math.sin(counter/chapter)*chapter*10;
-			by = by + Math.cos(counter/chapter)*chapter*10;
+			bx = bx + Math.sin(counter/chapter*4)*40;
+			by = by + Math.cos(counter/chapter*4)*40;
 			var a = x - bx;
 			var b = y - by;
 			return Math.sqrt( a*a + b*b ) / diagonalLength;
@@ -166,9 +177,9 @@
 		if (w >= maxWidth) {
 			h = maxWidth * 7/11;
 		} else if (w > 620) {
-			h = (w-40) * 7/11;
+			h = (w) * 7/11;
 		} else {
-			h = (w-40) * 14/11;
+			h = (w) * 14/11;
 		}
 		if (stageText[cutsceneStage] == "…") {
 			blankScreen++;

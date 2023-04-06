@@ -65,7 +65,7 @@
 			p.createCanvas(w, h);
 			p.background(0);
 			p.noStroke();
-			if (chapter != 12) {
+			if (chapter < 12) {
 				img = p.loadImage(`assets/kimchi/kimchibg.png`);
 			} else {
 				img = p.loadImage(`assets/kimchi/kimchibg-2.png`);
@@ -75,7 +75,7 @@
 		};
 	
 		p.draw = () => {
-			if (running ) {
+			if (running) {
 				if (chapter == 12 && blankScreen == 2) {
 					p.background([255,255,255, 40]);
 				} else if (chapter == 3 || chapter == 12) {
@@ -95,7 +95,7 @@
 							randomSeeker = Math.round(img.width/cellSize);
 						}
 						let c1 = img.get(xCoord, yCoord);
-						cellSize = w/100 + Math.round(dist*20);
+						cellSize = w/80 + Math.round(dist*20);
 						if (chapter == 3) {
 							c1[3] = 20;
 						}
@@ -138,8 +138,6 @@
 						let quadRand2 = dist*90*Math.random();
 						let quadRand3 = dist*90*Math.random();
 						p.quad(x1-quadRand2,y1-quadRand3,x1+cellSize-quadRand2,y1-quadRand3,x1+quadRand*2,y1+cellSize,x1-quadRand,y1+cellSize+quadRand)
-						//p.ellipse(x*cellSize,y*cellSize,cellSize,cellSize);
-						//p.rect(x*cellSize,y*cellSize,cellSize,cellSize);
 					}
 			  	}
 			  	counter++;
@@ -191,9 +189,9 @@
 		if (w >= maxWidth) {
 			h = maxWidth * 7/11;
 		} else if (w > 620) {
-			h = (w-40) * 7/11;
+			h = (w) * 7/11;
 		} else {
-			h = (w-40) * 14/11;
+			h = (w) * 14/11;
 		}
 		if (stageText[cutsceneStage] == "…") {
 			blankScreen++;

@@ -7,6 +7,7 @@
 	export let h;
 	export let maxWidth;
 	export let soundon;
+	
 	function start() {
 		chapterTracker = chapterTracker + 1;
 	}
@@ -14,6 +15,11 @@
 	function soundtoggle() {
 		soundon = !soundon;
 	}
+	
+	function credits() {
+		chapterTracker = 13;
+	}
+	
 	$: {
 		w = w;
 		if (w >= maxWidth) {
@@ -26,26 +32,27 @@
 	}
 </script>	
 <svelte:window bind:innerWidth={w}/>
-<div class="mainImage">
-	{#if w > 640}
-		<img src="assets/kimchi/universal/main-desktop.jpg"/>
-	{:else}
-		<img src="assets/kimchi/universal/main-mobile.jpg"/>
-	{/if}
-	<div class="buttonContainer">
-	<button class="start" on:click={start} on:keydown={start}>Start</button>
-	<br>
-	<button class="sound" on:click={soundtoggle} on:keydown={soundtoggle}>
-		{#if soundon}
-		Sound on
+	<div class="mainImage">
+		{#if w > 640}
+			<img alt="a marker drawing of kimchi leaves" src="assets/kimchi/universal/main-desktop.jpg"/>
 		{:else}
-		Sound off
+			<img alt="a marker drawing of kimchi leaves" src="assets/kimchi/universal/main-mobile.jpg"/>
 		{/if}
-	</button>
-</div>
-	
-</div>
-	
+		<div class="buttonContainer">
+		<button class="start" on:click={start} on:keydown={start}>Start</button>
+		<br>
+		<button class="sound" on:click={soundtoggle} on:keydown={soundtoggle}>
+			{#if soundon}
+			Sound: on
+			{:else}
+			Sound: off
+			{/if}
+		</button>
+		<br>
+		<button class="credits" on:click={credits} on:keydown={credits}>Credits</button>
+	</div>
+		
+	</div>
 
 	
 <style>
@@ -68,7 +75,7 @@
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
-		bottom: 40%;
+		top: 50%;
 	}
 	.mainImage button {
 		width: 150px;
@@ -78,12 +85,12 @@
 		text-transform: uppercase;
 		font-size: 20px;
 		margin: 0px;
-		margin-bottom: 20px;
-		box-shadow:4px 0px 0px #000;
+		margin-bottom: 10px;
+		box-shadow:4px 4px 0px #000;
 	}
 	.mainImage button:active {
 		box-shadow: 0px 0px 0px #000;
-		margin-left: 4px;
+		transform: translate(4px, 4px);
 	} 
 	.mainImage button:hover {
 		background: #eee;

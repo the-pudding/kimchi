@@ -14,7 +14,7 @@
 	let progressionStep = -1;
 	let sceneDarkness = {
 		"0": "dark",
-		"1": "light",
+		"1": "dark",
 		"2": "dark",
 		"3": "light",
 		"4": "light",
@@ -26,7 +26,7 @@
 		"10": "light",
 		"11": "dark",
 		"12": "dark",
-		"13": "dark"
+		"13": "light"
 	}
 	
 	let chordProgressionLookup = {
@@ -209,7 +209,6 @@
 				playNote(currentSong[i]);
 			}
 		} else if (mounted) {
-			console.log("off");
 			Tone.Transport.pause();
 		}
 		if (songPlayed) {
@@ -260,52 +259,34 @@
 	}
 </script>	
 <div class="soundbar">
-	{#if soundon}
-		
-			{#if mode}
-			<button class="soundbutton light" on:keydown={soundToggle} on:click={soundToggle}>
-				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-light.png"/>
-				Sound on
-			</button>
-			{:else}
 			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
+				{#if soundon}
 				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-{sceneDarkness[chapter]}.png"/>
-				Sound on
-			</button>
-			{/if}
-		
-	{:else}
-		
-			{#if mode}
-			<button class="soundbutton light" on:keydown={soundToggle} on:click={soundToggle}>
-				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-light.png"/>
-				Sound off
-			</button>
-			{:else}
-			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
+				Sound: on
+				{:else}
 				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-{sceneDarkness[chapter]}.png"/>
-				Sound off
+				Sound: off
+				{/if}
 			</button>
-			{/if}
-		
-	{/if}
 </div>
 <style>
 	.soundbar { text-align: right; }
 	.soundbutton {
 		cursor: pointer;
 		display: inline-block;
-		position: absolute;
-		right: 0px;
+		/* position: absolute; */
+		left: 0px;
 		top: 0px;
 		/* background: rgba(0,0,0,0.1); */
-		width: 115px;
+		width: 110px;
 		border-radius: 0%;
 		color: black;
-		text-align: center;
+		text-align: left;
 		z-index: 9999;
 		user-select: none;
 		background: none;
+		margin: 0px;
+		padding: 0px 0px 2px;
 	}
 	.soundbutton.light {
 		color: white;
