@@ -7,8 +7,7 @@
 	let now;
 	let mounted = false;
 	let soundon = false;
-	let measureAmounts = [4000,4000,2400,6000,6000,5000,5000,4000,4000,4000];
-	let measure = measureAmounts[chapter];
+	let measure = 4000;
 	let scales = ["A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B","C","Db","D","Eb","E","F","Gb","G","Ab"];
 	let baseKey = 8;
 	let key = baseKey;
@@ -274,7 +273,7 @@
 				}
 				key = chordProgression[chapter][progressionStep][0];
 				chord = chordProgression[chapter][progressionStep][1];
-				//console.log(scales[key], chord);
+				console.log(scales[key], chord);
 			}
 			
 			if ([0,1].includes(chapter)) {
@@ -318,14 +317,13 @@
 		if (counter % interval == 0 && 64-(counter%64) > len ) {
 			let keyShift = key;
 			if (!chordKey) {
-				let keyRand = Math.round(Math.abs(Math.cos(counter/2)) * 2);
+				let keyRand = Math.round(Math.abs(Math.sin(counter)) * 2);
 				if (keyRand > 2) {
 					len = len * 0.3;
 				}
 				keyShift = key + chords[chord][keyRand];
 			}
 			let m = scales[keyShift];
-			//console.log(m);
 			if (!rand || (rand && Math.random() < 0.5) ) {
 				if (rand && pitch == "4") {
 					if (counter > 2) {
@@ -354,10 +352,12 @@
 			{#if mode}
 			<button class="soundbutton light" on:keydown={soundToggle} on:click={soundToggle}>
 				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-light.png"/>
+				Sound on
 			</button>
 			{:else}
 			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
 				<img class="soundIcon" alt="sound on button" src="assets/kimchi/universal/sound-on-{sceneDarkness[chapter]}.png"/>
+				Sound on
 			</button>
 			{/if}
 		
@@ -366,10 +366,12 @@
 			{#if mode}
 			<button class="soundbutton light" on:keydown={soundToggle} on:click={soundToggle}>
 				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-light.png"/>
+				Sound off
 			</button>
 			{:else}
 			<button class="soundbutton {sceneDarkness[chapter]}" on:keydown={soundToggle} on:click={soundToggle}>
 				<img class="soundIcon" alt="sound off button" src="assets/kimchi/universal/sound-off-{sceneDarkness[chapter]}.png"/>
+				Sound off
 			</button>
 			{/if}
 		
@@ -381,28 +383,25 @@
 		cursor: pointer;
 		display: inline-block;
 		position: absolute;
-		right: 20px;
-		top: 20px;
+		right: 0px;
+		top: 0px;
 		/* background: rgba(0,0,0,0.1); */
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-		border: 2px solid white;
-		color: white;
+		width: 115px;
+		border-radius: 0%;
+		color: black;
 		text-align: center;
 		z-index: 9999;
 		user-select: none;
 		background: none;
 	}
-	.soundbutton.dark {
-		border: 2px solid black;
+	.soundbutton.light {
+		color: white;
 	}
 	.soundbutton img {
-		position: absolute;
-		width: 80%;
-		height: 80%;
-		left: 10%;
-		top: 10%;
+		width: 20px;
+		height: 20px;
+		margin-right: 5px;
+		float: left;
 	}
 	.soundbutton:hover {
 		color: black;
