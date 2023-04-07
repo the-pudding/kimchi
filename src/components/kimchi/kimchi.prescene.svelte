@@ -76,7 +76,7 @@
 		};
 	
 		p.draw = () => {
-			if (running ) {
+			if (running) {
 				p.background([0,0,0,2]);
 				for (let x = 0; x < w/cellSize; x += 1) {
 					for (let y = 0; y < h/cellSize; y += 1) {
@@ -100,17 +100,17 @@
 							c1[3] = 8;
 						}
 						if (chapter == 4) {
-							c1[0] *= 1.1;
+							c1[0] *= 0.1;
 							c1[1] *= 0.6;
 							c1[2] *= 0.6; 
 							c1[3] = 20;
 							cellSize *= 1.4;
 						}
 						if (chapter == 7) {
-							c1[0] *= 0.1;
-							c1[1] *= 0.3;
-							c1[2] *= 0.4; 
-							c1[3] = 25;
+							c1[0] *= 0.6;
+							c1[1] *= 7;
+							c1[2] *= 2; 
+							c1[3] = 6;
 						}
 						if (chapter == 10) {
 							c1[0] *= 0.7;

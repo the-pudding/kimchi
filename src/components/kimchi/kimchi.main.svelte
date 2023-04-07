@@ -77,13 +77,18 @@
 	max-width: 1200px;
 	width: 100%;
 	margin: 0 auto 50px;
-	overflow-y: hidden;
 	overflow-x: hidden;
 	overscroll-behavior-x: none;
 	position: relative;
 	box-sizing: border-box;
 	border: 2px solid #000;
 	background: black;
+	box-sizing: content-box; 
+	scrollbar-width: none; 
+	scroll-snap-stop: always;
+}
+.scene::-webkit-scrollbar { 
+	display: none;  /* Safari and Chrome */
 }
 @media screen and (max-width: 620px) {
 	.scene {

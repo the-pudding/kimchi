@@ -56,7 +56,7 @@
 				readyForNext = true;
 				bounce = "";
 			}
-		}, 6000);
+		}, 8000);
 		checkAllClicked();
 	}
 	
@@ -157,7 +157,9 @@
 		{/each}
 	</div>
 	{#if readyForNext && [2,5,8,11].includes(chapter)}
-		<button class="button bounce" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
+	<div class="buttonWrapper bounce">
+		<button class="button" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
+	</div>
 	{/if}
 	{#if modalShown && !scrolledY}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
@@ -404,7 +406,7 @@
 		user-select: none;
 		font-size: 1.8vw;
 		line-height: 2.7vw;
-		position: absolute;
+		position: fixed;
 		left: 50%;
 		bottom: 50%;
 		/* transform: translate(-50%, -50%); */
@@ -428,8 +430,8 @@
 		
 	}
 	.modal.bigImage img {
-		width: 100%;
-		left: 0%;
+		width: 90%;
+		left: 5%;
 		top: 50%;
 		position: absolute;
 		transform: translate(0%, -50%);
@@ -437,6 +439,17 @@
 	}
 	.modal .mobileImage {
 		display: none;
+	}
+	
+	.closeModal {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		bottom: calc(100% - 35px);
+		color: white;
+		font-family: "National 2 Web",sans-serif;
+		font-size: 16px;
+		z-index: 1000;
 	}
 	@media screen and (max-width: 880px) {
 		.modal  {
@@ -446,6 +459,14 @@
 	}
 	
 	@media screen and (max-width: 620px) {
+		.modal.bigImage img {
+			width: 100%;
+			left: 0%;
+			top: 50%;
+			position: absolute;
+			transform: translate(0%, -50%);
+			/* transform: rotate(1deg); */
+		}
 		.modal  {
 			font-size: 16px;
 			line-height: 20px;
@@ -456,6 +477,12 @@
 		}
 		.modal .desktopImage {
 			display: none;
+		}
+		.closeModal {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			top: 30px;
 		}
 	}
 	
@@ -469,21 +496,7 @@
 		font-weight: 500;
 		opacity: 1;
 	}
-	.closeModal {
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
-		top: 30px;
-		color: white;
-		/* width: 0;
-		height: 0; */
-		font-family: "National 2 Web",sans-serif;
-		font-size: 16px;
-		z-index: 1000;
-		/* border-style: solid;
-		border-width: 10px 10px 0 10px;
-		border-color: #fff transparent transparent transparent; */
-	}
+	
 	
 	
 	/* WORDS ONLY */

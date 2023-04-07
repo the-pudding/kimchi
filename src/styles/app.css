@@ -69,8 +69,9 @@
 body {
 	background: #EEECE7;
 	font-family: --var(--serif);
+	/* overflow-x: hidden; */
 }
-#content {padding: 0 10px; box-sizing: border-box;}
+#content {padding: 0 10px; box-sizing: border-box; overflow-x: hidden; overscroll-behavior-x: none;}
 @media screen and (max-width: 1200px) {
 	#content {padding: 0 0px; width: calc(100% + 4px); margin-left: -2px;}
 }
@@ -136,11 +137,15 @@ Kimchi styles
 .sceneImage {
 	width: 100%;
 }
-
-.button {
+.buttonWrapper {
 	position: absolute;
 	right: 20px;
-	bottom: 20px;
+	bottom: 60px;
+	width: 130px;
+}
+.button {
+	position: fixed;
+	width: 130px;
 	padding: 10px;
 	background: white;
 	border: 2px solid #000;
@@ -163,13 +168,6 @@ Kimchi styles
 	margin-right: -2px;
 	margin-bottom: -2px;
 }
-.panButton {
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	color: red;
-}
-
 
 /* Scene words */
 

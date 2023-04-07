@@ -21,13 +21,13 @@
 		"4": ["contemplative","slow"],
 		"5": ["contemplative","slow"],
 		"6": ["somber","slower"],
-		"7": ["contemplative","slower"],
-		"8": ["contemplative","slow"],
-		"9": ["contemplative","slow"],
+		"7": ["contemplative","forging"],
+		"8": ["contemplative","forging"],
+		"9": ["content","anthem"],
 		"10": ["content","forging"],
-		"11": ["content","forging"],
-		"12": ["content","forging"],
-		"13": ["content","anthem"]
+		"11": ["content","anthem"],
+		"12": ["contemplative","anthem"],
+		"13": ["happy","anthem"]
 	}
 	
 	let songLookup = {
