@@ -406,7 +406,7 @@
 		user-select: none;
 		font-size: 1.8vw;
 		line-height: 2.7vw;
-		position: fixed;
+		position: absolute;
 		left: 50%;
 		bottom: 50%;
 		/* transform: translate(-50%, -50%); */
