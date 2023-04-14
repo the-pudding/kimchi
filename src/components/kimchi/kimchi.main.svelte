@@ -7,7 +7,7 @@
 	import Sound from "$components/kimchi/kimchi.sound.svelte";
 	export let copy;
 	let loaded = false;
-	let currentChapter = 3;
+	let currentChapter = 1;
 	let sceneHeight = 700;
 	let windowWidth = 400;
 	let maxWidth = 1200;

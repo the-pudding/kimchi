@@ -28,16 +28,23 @@
 		fullheight = insideWords.scrollHeight;
 	});
 	
-	function next() {
+	function onKeyDown(e) {
+		if (e.keyCode == 37 || e.keyCode == 38) {
+			 next(1);
+		 }
+		 if (e.keyCode == 39 || e.keyCode == 40) {
+			 next();
+		 }
+	}
+	
+	function next(prev) {
 		
 		if (cutsceneStage < stageText.length) {
-			// if (typeClick != 0) {
-			// 	cutsceneStage++;
-			// 	typeClick = 0;
-			// } else {
-			// 	typeClick++;
-			// }
-			cutsceneStage++;
+			if (prev == 1 && cutsceneStage > 0) {
+				cutsceneStage--;
+			} else if (prev != 1) {
+				cutsceneStage++;
+			}
 			delayNumber = 0;
 			opacityAmount = 255;
 			
@@ -190,10 +197,12 @@
 		return Math.floor(Math.random() * (max - min + 1) + min)
 	}
 	
-	function opacityMunge(n) {
-		if (n == 0) {return 0.1;}
-		else if (n == 1) {return 1;}
-		else {return n / 2; }
+	function opacityMunge(number, stage) {
+		let opacity = number / stage;
+		if (number == 0 && stage == 0) { opacity = 1; }
+		if (opacity == 0) {return 0.1;}
+		else if (opacity == 1) {return 1;}
+		else {return opacity / 2; }
 	}
 	  
 	$: {
@@ -214,7 +223,7 @@
 		h = h;
 	}
 </script>
-<svelte:window bind:innerWidth={w}/>
+<svelte:window bind:innerWidth={w} on:keydown|preventDefault={onKeyDown}/>
 <div class="sceneInside cutscene"  on:click={next} on:keyup={next}>
 	<div class="visualContainer">
 		<P5 {sketch} />
@@ -223,7 +232,7 @@
 		<div class="insideIntroWords" bind:this={insideWords} style="max-height:{fullheight}px;">
 			{#each stageText as text, i}
 				{#if i <= cutsceneStage}
-					<p style="opacity:{opacityMunge(i/cutsceneStage)};">{@html stageText[i]}</p>
+					<p style="opacity:{opacityMunge(i, cutsceneStage)};">{@html stageText[i]}</p>
 				{/if}
 			{/each}
 		<!-- {#if typeClick == 0}
