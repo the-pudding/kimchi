@@ -144,7 +144,7 @@ Kimchi styles
 	width: 130px;
 }
 .button {
-	position: fixed;
+	position: absolute;
 	width: 130px;
 	padding: 10px;
 	background: white;
@@ -159,6 +159,8 @@ Kimchi styles
 	   -moz-user-select: none; 
 		-ms-user-select: none; 
 			user-select: none;
+	transition: all 500ms cubic-bezier(0.250, 0.100, 0.250, 1.000); /* ease (default) */
+	transition-timing-function: cubic-bezier(0.250, 0.100, 0.250, 1.000); /* ease (default) */
 }
 .button:hover {
 	background: #eee;
@@ -174,22 +176,43 @@ Kimchi styles
 .introWords {
 	/* font-family: "Tiempos Text Web",serif !important; */
 	position: absolute;
-	top: 50%;
+	bottom: 45%;
 	transform: translate(-50%, -50%);
 	color: white;
-	text-shadow: -1px 0px 6px rgba(0, 0, 0, 1);
+	text-shadow: -3px -3px 1px rgba(20,20,20, 0.1), -3px -2px 1px rgba(20,20,20, 0.1), -3px -1px 1px rgba(20,20,20, 0.1), -3px 0px 1px rgba(20,20,20, 0.1), -3px 1px 1px rgba(20,20,20, 0.1), -3px 2px 1px rgba(20,20,20, 0.1), -3px 3px 1px rgba(20,20,20, 0.1), -2px -3px 1px rgba(20,20,20, 0.1), -2px -2px 1px rgba(20,20,20, 0.1), -2px -1px 1px rgba(20,20,20, 0.1), -2px 0px 1px rgba(20,20,20, 0.1), -2px 1px 1px rgba(20,20,20, 0.1), -2px 2px 1px rgba(20,20,20, 0.1), -2px 3px 1px rgba(20,20,20, 0.1), -1px -3px 1px rgba(20,20,20, 0.1), -1px -2px 1px rgba(20,20,20, 0.1), -1px -1px 1px rgba(20,20,20, 0.1), -1px 0px 1px rgba(20,20,20, 0.1), -1px 1px 1px rgba(20,20,20, 0.1), -1px 2px 1px rgba(20,20,20, 0.1), -1px 3px 1px rgba(20,20,20, 0.1), 0px -3px 1px rgba(20,20,20, 0.1), 0px -2px 1px rgba(20,20,20, 0.1), 0px -1px 1px rgba(20,20,20, 0.1), 0px 1px 1px rgba(20,20,20, 0.1), 0px 2px 1px rgba(20,20,20, 0.1), 0px 3px 1px rgba(20,20,20, 0.1), 1px -3px 1px rgba(20,20,20, 0.1), 1px -2px 1px rgba(20,20,20, 0.1), 1px -1px 1px rgba(20,20,20, 0.1), 1px 0px 1px rgba(20,20,20, 0.1), 1px 1px 1px rgba(20,20,20, 0.1), 1px 2px 1px rgba(20,20,20, 0.1), 1px 3px 1px rgba(20,20,20, 0.1), 2px -3px 1px rgba(20,20,20, 0.1), 2px -2px 1px rgba(20,20,20, 0.1), 2px -1px 1px rgba(20,20,20, 0.1), 2px 0px 1px rgba(20,20,20, 0.1), 2px 1px 1px rgba(20,20,20, 0.1), 2px 2px 1px rgba(20,20,20, 0.1), 2px 3px 1px rgba(20,20,20, 0.1), 3px -3px 1px rgba(20,20,20, 0.1), 3px -2px 1px rgba(20,20,20, 0.1), 3px -1px 1px rgba(20,20,20, 0.1), 3px 0px 1px rgba(20,20,20, 0.1), 3px 1px 1px rgba(20,20,20, 0.1), 3px 2px 1px rgba(20,20,20, 0.1), 3px 3px 1px rgba(20,20,20, 0.1);
 	/* background: black; */
 	padding: 10px;
-	font-size: 20px;
-	line-height: 28px;
+	font-size: 22px;
+	line-height: 29px;
 	width: 50%;
 	left: 50%;
 	pointer-events: none;
 	user-select: none;
 }
+.insideIntroWords {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	padding: 0 10px;
+	transition: max-height 500ms;
+	overflow-y: hidden;
+	overflow-x: visible;
+}
 .introWords div { font-weight: normal !important; }
+.introWords strong {
+	font-size: 40px;
+	text-align: center;
+}
+.introWords span {
+	opacity: 0.4;
+	display: block;
+	margin-top: 10px;
+}
 .introWords p {
-	margin: 0;
+	margin: 0 0 20px 0;
+	height: auto;
+	transition: all 200ms cubic-bezier(0.250, 0.250, 0.750, 0.750);
+	transition-timing-function: cubic-bezier(0.250, 0.250, 0.750, 0.750);
 }
 .introExit {
 	opacity: 0.4;

@@ -1,36 +1,43 @@
 <script>
 	import P5 from 'p5-svelte';
-	import { fade } from 'svelte/transition';
+	import { slide, fade, fly } from 'svelte/transition';
 	import Typewriter from 'svelte-typewriter';
+	import { onMount } from 'svelte';
 	export let chapter;
 	export let w;
 	export let h;
 	export let maxWidth;
 	export let chapterTracker = Number(chapter);
 	let running = true;
-	let delayNumber = 1000;
 	let blankScreen = 0;
-	
+	let delayNumber = 1000;
 	export let cutsceneText;
 	let cutsceneStage = 0;
 	let stageText = cutsceneText;
 	let opacityAmount = 40;
-
+	let lastScene = "";
+	let insideWords;
+	let fullheight = 0;	
 	
+	// let typeClick = 0;
+	// function resetTypewriter() {
+	// 	typeClick = 1;
+	// }
 	
-	let typeClick = 0;
-	function resetTypewriter() {
-		typeClick = 1;
-	}
+	onMount(async () => {
+		fullheight = insideWords.scrollHeight;
+	});
 	
 	function next() {
+		
 		if (cutsceneStage < stageText.length) {
-			if (typeClick != 0) {
-				cutsceneStage++;
-				typeClick = 0;
-			} else {
-				typeClick++;
-			}
+			// if (typeClick != 0) {
+			// 	cutsceneStage++;
+			// 	typeClick = 0;
+			// } else {
+			// 	typeClick++;
+			// }
+			cutsceneStage++;
 			delayNumber = 0;
 			opacityAmount = 255;
 			
@@ -47,6 +54,9 @@
 			xVel = randomIntFromInterval(-90,90);
 			yVel = randomIntFromInterval(-90,90);
 		}
+		setTimeout(function() {
+			fullheight = insideWords.scrollHeight;
+		},10);	
 	}
 	
 	let cellSize = 60;
@@ -97,7 +107,7 @@
 						let c1 = img.get(xCoord, yCoord);
 						cellSize = w/80 + Math.round(dist*20);
 						if (chapter == 3) {
-							c1[3] = 20;
+							c1[3] = 10;
 						}
 						if (chapter == 6) {
 							c1[0] *= 0.1;
@@ -179,10 +189,15 @@
 	function randomIntFromInterval(min, max) { // min and max included 
 		return Math.floor(Math.random() * (max - min + 1) + min)
 	}
-	 
 	
+	function opacityMunge(n) {
+		if (n == 0) {return 0.1;}
+		else if (n == 1) {return 1;}
+		else {return n / 2; }
+	}
 	  
 	$: {
+		fullheight = fullheight;
 		chapterTracker = chapterTracker;
 		cutsceneStage = cutsceneStage;
 		w = w;
@@ -200,18 +215,25 @@
 	}
 </script>
 <svelte:window bind:innerWidth={w}/>
-<div class="sceneInside cutscene"  on:click={next} on:keyup={next} out:fade="{{duration: 200}}">
+<div class="sceneInside cutscene"  on:click={next} on:keyup={next}>
 	<div class="visualContainer">
 		<P5 {sketch} />
 	</div>
-	<div class="introWords">
-		{#if typeClick == 0}
+	<div class="introWords sceneNum{blankScreen}">
+		<div class="insideIntroWords" bind:this={insideWords} style="max-height:{fullheight}px;">
+			{#each stageText as text, i}
+				{#if i <= cutsceneStage}
+					<p style="opacity:{opacityMunge(i/cutsceneStage)};">{@html stageText[i]}</p>
+				{/if}
+			{/each}
+		<!-- {#if typeClick == 0}
 		<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,14,10,20,8,14,30]}  on:done={resetTypewriter}>
 		{stageText[cutsceneStage]}
 		</Typewriter>
-		{:else}
-			{@html stageText[cutsceneStage]}
-		{/if}
+		{:else} -->
+			<!-- {@html stageText[cutsceneStage]} -->
+		<!-- {/if} -->
+		</div>
 	</div>
 </div>
 
@@ -219,5 +241,9 @@
 	.cutscene { cursor: pointer; }
 	.sceneInside {
 		background: black;
+	}
+	.sceneNum2 {
+		color: black !important;
+		text-shadow: none;
 	}
 </style>

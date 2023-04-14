@@ -1,22 +1,27 @@
 <script>
 	import P5 from 'p5-svelte';
-	import { fade } from 'svelte/transition';
+	import { slide, fade, fly } from 'svelte/transition';
 	import Typewriter from 'svelte-typewriter';
+	import { onMount } from 'svelte';
 	export let chapter;
 	export let w;
 	export let h;
 	export let maxWidth;
 	export let chapterTracker = Number(chapter);
 	let running = true;
-	let delayNumber = 1000;
+	let delayNumber = 0;
 	let blankScreen = 0;
+	let insideWords;
+	let fullheight = 0;	
 	
 	export let cutsceneText;
 	let cutsceneStage = 0;
 	let stageText = cutsceneText;
 	let opacityAmount = 40;
 
-	
+	onMount(async () => {
+		fullheight = insideWords.scrollHeight;
+	});
 	
 	let typeClick = 0;
 	function resetTypewriter() {
@@ -25,12 +30,13 @@
 	
 	function next() {
 		if (cutsceneStage < stageText.length) {
-			if (typeClick != 0) {
-				cutsceneStage++;
-				typeClick = 0;
-			} else {
-				typeClick++;
-			}
+			// if (typeClick != 0) {
+			// 	cutsceneStage++;
+			// 	typeClick = 0;
+			// } else {
+			// 	typeClick++;
+			// }
+			cutsceneStage++;
 			delayNumber = 0;
 			opacityAmount = 255;
 			
@@ -47,6 +53,9 @@
 			xVel = randomIntFromInterval(-90,90);
 			yVel = randomIntFromInterval(-90,90);
 		}
+		setTimeout(function() {
+			fullheight = insideWords.scrollHeight;
+		},10);
 	}
 	
 	let cellSize = 60;
@@ -113,9 +122,9 @@
 							c1[3] = 6;
 						}
 						if (chapter == 10) {
-							c1[0] *= 0.7;
-							c1[1] *= 0.2;
-							c1[2] *= 1.8; 
+							c1[0] *= 0.5;
+							c1[1] *= 0.1;
+							c1[2] *= 1.5; 
 							c1[3] = 8;
 						}
 						if (chapter == 13) {
@@ -123,6 +132,9 @@
 							c1[1] *= 0.1;
 							c1[2] *= 1.1; 
 							c1[3] = 20;
+						}
+						if (cutsceneStage == 0) {
+							c1[3] = 0;
 						}
 						p.fill(c1);
 						let rand = dist*90*Math.random();
@@ -167,6 +179,12 @@
 	function randomIntFromInterval(min, max) { // min and max included 
 		return Math.floor(Math.random() * (max - min + 1) + min)
 	}
+	
+	function opacityMunge(n) {
+		if (n == 0) {return 0.1;}
+		else if (n == 1) {return 1;}
+		else {return n / 2; }
+	}
 	 
 	
 	  
@@ -193,6 +211,7 @@
 		<P5 {sketch} />
 	</div>
 	<div class="introWords">
+		<!-- <div class="insideIntroWords">
 		{#if stageText[cutsceneStage] != undefined}
 			{#if typeClick == 0}
 			<Typewriter interval={[90,10,15,1,2,12,20,2,5,10,14,10,20,8,14,30]} delay={delayNumber} on:done={resetTypewriter}>
@@ -202,6 +221,14 @@
 				{@html stageText[cutsceneStage]}
 			{/if}
 		{/if}
+		</div> -->
+		<div class="insideIntroWords" bind:this={insideWords} style="max-height:{fullheight}px;">
+			{#each stageText as text, i}
+				{#if i <= cutsceneStage}
+					<p style="opacity:{opacityMunge(i/cutsceneStage)};">{@html stageText[i]}</p>
+				{/if}
+			{/each}
+		</div>
 	</div>
 	
 

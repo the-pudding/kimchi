@@ -87,6 +87,7 @@
 		margin: 0px;
 		margin-bottom: 10px;
 		box-shadow:4px 4px 0px #000;
+		color: black !important;
 	}
 	.mainImage button:active {
 		box-shadow: 0px 0px 0px #000;

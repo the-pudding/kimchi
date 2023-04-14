@@ -1,14 +1,12 @@
 <script>
 	import Typewriter from 'svelte-typewriter';
 	import { fade } from 'svelte/transition';
-	import { swipe } from 'svelte-gestures';
 	
 	// determines which scene to show
 	export let chapter;
 	export let chapterTracker = Number(chapter);
 	export let hoverHints;
 	let cutsceneStage = 0;
-	let delayNumber = 800;
 	let sceneOffset = "rightSide";
 	let displayMode = "display";
 	let modalShown = false;
@@ -17,9 +15,10 @@
 	let hed, words, type, image, alt;
 	let fullWidth = 2200/100;
 	let bounce = "bounce";
-	let swipeInteracted = false;
 	export let scrolled;
 	export let scrolledY;
+	export let scrollAmount;
+	export let sceneHeight;
 	  
 	let selectedHint = null;
 	let nextHint = null;
@@ -158,7 +157,7 @@
 	</div>
 	{#if readyForNext && [2,5,8,11].includes(chapter)}
 	<div class="buttonWrapper bounce">
-		<button class="button" on:click={nextChapter} on:keydown={nextChapter}>Eat kimchi</button>
+		<button class="button" on:click={nextChapter} on:keydown={nextChapter} style="left:{scrollAmount}px;">Eat kimchi</button>
 	</div>
 	{/if}
 	{#if modalShown && !scrolledY}

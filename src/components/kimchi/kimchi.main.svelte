@@ -7,7 +7,7 @@
 	import Sound from "$components/kimchi/kimchi.sound.svelte";
 	export let copy;
 	let loaded = false;
-	let currentChapter = 0;
+	let currentChapter = 3;
 	let sceneHeight = 700;
 	let windowWidth = 400;
 	let maxWidth = 1200;
@@ -20,15 +20,17 @@
 		} else if (windowWidth > 620) {
 			sceneHeight = (windowWidth+4) * 7/11;
 		} else {
-			sceneHeight = (windowWidth+4) * 14/11;
+			sceneHeight = (windowWidth-20) * 14/11;
 		}
 		loaded = true;
 	},100);
 	
 	let scrolled = false;
 	let scrolledY = false;
+	let scrollAmount = 0;
 	let scene;
 	function parseScroll() {
+		scrollAmount = scene.scrollLeft;
 		if (scene.scrollLeft > 10) {
 			scrolled = true;
 		}
@@ -50,7 +52,7 @@
 <svelte:window bind:innerWidth={windowWidth} on:scroll={parseScrollY}/>
 {#if loaded}
 <Sound bind:chapter={currentChapter} bind:mode={cutSceneMode} bind:soundon={soundon}/>
-<div class="scene" bind:this={scene}  style="height:{sceneHeight}px;" in:fade on:scroll={parseScroll} on:mousemove={parseScroll}>
+<div class="scene" bind:this={scene}  style="height:{sceneHeight}px;" on:scroll={parseScroll} on:mousemove={parseScroll}>
 	<!-- Intro -->
 	{#if currentChapter == 0}
 	<Intro chapter="0" bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth} bind:soundon={soundon}/>
@@ -63,7 +65,7 @@
 	
 	<!-- Main scenes -->
 	{#if [2,5,8,11].includes(currentChapter)}
-		<Scene chapter={currentChapter} hoverHints={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} bind:scrolled={scrolled} bind:scrolledY={scrolledY} />
+		<Scene chapter={currentChapter} hoverHints={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} bind:scrolled={scrolled} bind:scrolledY={scrolledY} bind:scrollAmount={scrollAmount}/>
 	{/if}
 		
 	<!-- Cut scenes -->
