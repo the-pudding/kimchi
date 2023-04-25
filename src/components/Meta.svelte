@@ -1,7 +1,7 @@
 <script>
-	export let title = "Title TK";
-	export let description = "Description TK";
-	export let url = "https://pudding.cool";
+	export let title = "The search for my kimchi";
+	export let description = "Our author loved his grandmother's fresh kimchi. But as he aged, tasting the defining flavor of his childhood became elusive.";
+	export let url = "https://pudding.cool/2023/05/kimchi";
 	export let keywords = "";
 	export let preloadFont = [];
 </script>
