@@ -113,12 +113,12 @@
 							randomSeeker = Math.round(img.width/cellSize);
 						}
 						let c1 = img.get(xCoord, yCoord);
-						cellSize = w/40 + Math.round(dist*10);
+						cellSize = w/20 + Math.round(dist*10);
 						
 						if (chapter == 1) {
-							c1[0] *= 0.6;
-							c1[1] *= 0.6;
-							c1[2] *= 0.6; 
+							c1[0] *= 0.7;
+							c1[1] *= 0.7;
+							c1[2] *= 0.7; 
 							c1[3] = 8;
 						}
 						if (chapter == 4) {

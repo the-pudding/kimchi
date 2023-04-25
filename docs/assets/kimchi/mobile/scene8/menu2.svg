@@ -1,1 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 700"><defs><style>.b{fill:#eee9e3;}.c{fill:#ff005c;}.d,.e{font-family:National2-Regular, 'National 2';}.d,.f{font-size:22.94px;}.e{font-size:16px;}.g{font-size:36px;}.g,.f{font-family:National2-Bold, 'National 2';}</style></defs><rect class="b" y="0" width="550" height="700"/><text class="g" transform="translate(46.65 67.06)"><tspan x="0" y="0">Korea restaurants in the US</tspan></text><text class="e" transform="translate(17.49 666.19)"><tspan x="0" y="0">Source: The Korea Herald via the Korean Ministry of Agriculture, Food </tspan><tspan x="0" y="19.2">and Rural Affairs/Korean Food Promotion Institute</tspan></text><path class="c" d="M248.32,502.98H123.32v-147.85c0-1.9,.9-3.44,2-3.44h121c1.1,0,2,1.54,2,3.44v147.85Z"/><path class="c" d="M417.75,502.98h-125V179.77c0-1.9,.9-3.44,2-3.44h121c1.1,0,2,1.54,2,3.44V502.98Z"/><text class="f" transform="translate(158.75 536.62)"><tspan x="0" y="0">2009</tspan></text><text class="f" transform="translate(331.1 536.62)"><tspan x="0" y="0">2017</tspan></text><text class="d" transform="translate(158.53 339.65)"><tspan x="0" y="0">1,046</tspan></text><text class="d" transform="translate(327.49 163.38)"><tspan x="0" y="0">2,247</tspan></text></svg>
+<?xml version="1.0" encoding="UTF-8"?><svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 700"><defs><style>@font-face {
+	font-family: "National2-Regular";
+	src: url("https://pudding.cool/assets/fonts/national/National2Web-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "National2-Bold";
+	src: url("https://pudding.cool/assets/fonts/national/National2Web-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	font-display: swap;
+}.b{fill:#eee9e3;}.c{fill:#ff005c;}.d,.e{font-family:National2-Regular, 'National 2';}.d,.f{font-size:22.94px;}.e{font-size:16px;}.g{font-size:36px;}.g,.f{font-family:National2-Bold, 'National 2';}</style></defs><rect class="b" y="0" width="550" height="700"/><text class="g" transform="translate(46.65 67.06)"><tspan x="0" y="0">Korea restaurants in the US</tspan></text><text class="e" transform="translate(17.49 666.19)"><tspan x="0" y="0">Source: The Korea Herald via the Korean Ministry of Agriculture, Food </tspan><tspan x="0" y="19.2">and Rural Affairs/Korean Food Promotion Institute</tspan></text><path class="c" d="M248.32,502.98H123.32v-147.85c0-1.9,.9-3.44,2-3.44h121c1.1,0,2,1.54,2,3.44v147.85Z"/><path class="c" d="M417.75,502.98h-125V179.77c0-1.9,.9-3.44,2-3.44h121c1.1,0,2,1.54,2,3.44V502.98Z"/><text class="f" transform="translate(158.75 536.62)"><tspan x="0" y="0">2009</tspan></text><text class="f" transform="translate(331.1 536.62)"><tspan x="0" y="0">2017</tspan></text><text class="d" transform="translate(158.53 339.65)"><tspan x="0" y="0">1,046</tspan></text><text class="d" transform="translate(327.49 163.38)"><tspan x="0" y="0">2,247</tspan></text></svg>

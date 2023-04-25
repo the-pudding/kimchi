@@ -163,7 +163,7 @@
 					<div class="hintBubble"></div>
 				{/if} -->
 				
-				{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker"}
+				{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker" || hint.addclass == "speaker sidespeaker"}
 					<div class="quotebox perma {bounce} {hint.xPos}">
 							{#if !allClicked}
 								<span in:fade>{hintPrompt[chapter]}</span>
@@ -212,7 +212,7 @@
 <style>
 	.sceneInside {
 		background: black;
-		font-family: var(--sans);
+		font-family: "National 2 Web", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif !important;
 		user-select: none;
 	}
 	.debugger {
@@ -254,8 +254,7 @@
 		animation: pulse-dropshadowhover 2s infinite;
 	}
 	.hintContainer:hover img  {
-		filter: contrast(1.3) brightness(1.2) drop-shadow(1px 1px 20px #fff);
-		/* margin-top: -2px; */
+		filter: contrast(1.3) brightness(1.2); 		/* margin-top: -2px; */
 	}
 	.hintContainer.sidehover:hover  {
 		margin-top: 0px !important;
@@ -336,7 +335,7 @@
 		display: block !important;
 		background: white;
 		color: black;
-		width: 180px;
+		width: 220px;
 		padding: 9px;
 		box-shadow: 0px 0px 45px #000;
 		pointer-events: none;
@@ -345,10 +344,16 @@
 		font-weight: bold;
 		color: #444745;
 	}
+	.sidespeaker.hintContainer .quotebox.perma {
+		top: auto;
+		bottom: -10px;
+		right: 20px;
+		left: auto;
+	}
 	.bounce {animation: bounce 3s infinite;}
 	.bounce2 {animation: bounce2 3s infinite; position: relative; pointer-events: auto;}
 	.hintContainer .quotebox.perma img {
-	margin-right: 5px;
+		margin-right: 5px;
 	}
 	.quotebox.perma .response {
 		display: none;
@@ -360,10 +365,11 @@
 	.quotebox img {
 		float: left;
 		width: 40px;
-		margin-right: 7px;
+		margin-right: 3px;
 	}
 	.hintImageContainer {
 		display: block;
+		margin-top: 5px;
 	}
 	.quotebox .hintImage {
 		display: inline-block;
@@ -433,6 +439,15 @@
 	.hintContainer .quotebox.perma::before {
 		border-color: white transparent transparent transparent;
 	}
+	.sidespeaker.hintContainer .quotebox.perma::before {
+		left: 86%;
+		/* left: 99%;
+		top: 75%;
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent;
+		border-left: 10px solid white; */
+	}
+	
 	
 	/* animations */
 	.updown {
@@ -653,7 +668,7 @@
 		transform: translateX(-50%);
 		top: calc(100% - 35px);
 		color: white;
-		font-family: "National 2 Web",sans-serif;
+		font-family: var(--sans);
 		font-size: 16px;
 		z-index: 1000;
 	}
@@ -737,6 +752,8 @@
 		transform: translateX(-50%);
 		animation: swipe-animation 1.5s infinite;
 		display: none;
+		user-select: none;
+		pointer-events: none;
 	}
 	@media screen and (max-width: 620px) {
 		.swipeHint { display: block; }

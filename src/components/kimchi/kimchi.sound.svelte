@@ -162,7 +162,7 @@
 	
 	function soundToggle() {
 		soundon = !soundon;
-		// play("Bb1",2);
+		play("C8",0.05);
 	}
 	
 	function play(n, length) {

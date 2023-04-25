@@ -8,21 +8,22 @@
 	import Progress from "$components/kimchi/kimchi.progress.svelte";
 	export let copy;
 	let loaded = false;
-	let currentChapter = 0;
+	let currentChapter = 11;
 	let sceneHeight = 700;
 	let windowWidth = 400;
 	let maxWidth = 1200;
 	let cutSceneMode = true;
 	let soundon = false;
 	let eventClicked = 0;
+	let insideWidth;
 	setInterval(function() {
-		windowWidth = windowWidth;
+		windowWidth = insideWidth;
 		if (windowWidth >= maxWidth) {
 			sceneHeight = maxWidth * 7/11;
 		} else if (windowWidth > 620) {
-			sceneHeight = (windowWidth-16) * 7/11;
+			sceneHeight = (windowWidth) * 7/11;
 		} else {
-			sceneHeight = (windowWidth-16) * 14/11;
+			sceneHeight = (windowWidth) * 14/11;
 		}
 		loaded = true;
 	},100);
@@ -51,10 +52,10 @@
 	}
 	
 </script>
-<svelte:window bind:innerWidth={windowWidth} on:scroll={parseScrollY}/>
+<svelte:window on:scroll={parseScrollY}/>
 {#if loaded}
 <Sound bind:chapter={currentChapter} bind:eventClicked={eventClicked} bind:mode={cutSceneMode} bind:soundon={soundon}/>
-<div class="scene" bind:this={scene}  style="height:{sceneHeight}px;" on:scroll={parseScroll} on:mousemove={parseScroll}>
+<div class="scene" bind:this={scene} bind:clientWidth={insideWidth}  style="height:{sceneHeight}px;" on:scroll={parseScroll} on:mousemove={parseScroll}>
 	<!-- Intro -->
 	{#if currentChapter == 0}
 		{#key currentChapter}

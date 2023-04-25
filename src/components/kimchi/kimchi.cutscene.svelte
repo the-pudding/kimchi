@@ -116,7 +116,7 @@
 							randomSeeker = Math.round(img.width/cellSize);
 						}
 						let c1 = img.get(xCoord, yCoord);
-						cellSize = w/80 + Math.round(dist*20);
+						cellSize = w/40 + Math.round(dist*20);
 						if (chapter == 3) {
 							c1[3] = 10;
 						}
@@ -150,7 +150,7 @@
 							c1[1] *= 0.2;
 							c1[2] *= 0.1; 
 							c1[3] = opacityAmount*0.005;
-							cellSize = w/50;
+							cellSize = w/20;
 						}
 						p.fill(c1);
 						let x1 = x*cellSize;
