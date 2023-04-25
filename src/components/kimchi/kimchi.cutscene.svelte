@@ -26,6 +26,7 @@
 	
 	onMount(async () => {
 		fullheight = insideWords.scrollHeight;
+		blankScreen = 0;
 	});
 	
 	function onKeyDown(e) {
@@ -62,7 +63,10 @@
 			yVel = randomIntFromInterval(-90,90);
 		}
 		setTimeout(function() {
-			fullheight = insideWords.scrollHeight;
+			try {
+				fullheight = insideWords.scrollHeight;
+			} catch(e) {
+			}	
 		},10);	
 	}
 	
@@ -93,7 +97,7 @@
 	
 		p.draw = () => {
 			if (running) {
-				if (chapter == 12 && blankScreen == 2) {
+				if (chapter == 12 && blankScreen == 4) {
 					p.background([255,255,255, 40]);
 				} else if (chapter == 3 || chapter == 12) {
 					p.background([100,0,40,10]);
@@ -135,13 +139,13 @@
 							c1[2] *= 1.1; 
 							c1[3] = 20;
 						}
-						if (blankScreen == 1) {
+						if (blankScreen == 2) {
 							c1[0] *= 1.5;
 							c1[1] *= 0;
 							c1[2] *= 0; 
 							c1[3] = opacityAmount*0.1;
 						}
-						if (blankScreen == 2) {
+						if (blankScreen == 4) {
 							c1[0] *= 0.2;
 							c1[1] *= 0.2;
 							c1[2] *= 0.1; 
@@ -247,11 +251,11 @@
 </div>
 
 <style>
-	.cutscene { cursor: pointer; }
+	.cutscene { cursor: pointer; z-index: 99; }
 	.sceneInside {
 		background: black;
 	}
-	.sceneNum2 {
+	.sceneNum4 {
 		color: black !important;
 		text-shadow: none;
 	}

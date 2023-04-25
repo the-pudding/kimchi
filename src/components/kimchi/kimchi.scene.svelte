@@ -1,11 +1,12 @@
 <script>
 	import Typewriter from 'svelte-typewriter';
 	import { fade } from 'svelte/transition';
-	
+	import { onMount } from 'svelte';
 	// determines which scene to show
 	export let chapter;
 	export let chapterTracker = Number(chapter);
 	export let hoverHints;
+	export let eventClicked;
 	let cutsceneStage = 0;
 	let sceneOffset = "rightSide";
 	let displayMode = "display";
@@ -14,81 +15,94 @@
 	let readyForNext = false;
 	let hed, words, type, image, alt;
 	let fullWidth = 2200/100;
-	let bounce = "bounce";
+	let bounce = "";
 	export let scrolled;
 	export let scrolledY;
 	export let scrollAmount;
-	export let sceneHeight;
 	  
 	let selectedHint = null;
-	let nextHint = null;
 	let hintResponse = null;
+	
+	onMount(async () => {
+		cutsceneStage = 0;
+		for (let i = 0; i < hoverHints.length; i++) {
+			hoverHints[i].clicked = "false";
+		}
+	});
+	
+	
 	function showModal(e) {
+	
+		if (eventClicked != 3) {
 		hed = e.target.getAttribute("hed");
 		words = e.target.getAttribute("words");
 		type = e.target.getAttribute("type");
 		image = "scene" + chapter + "/" + e.target.getAttribute("image");
 		alt = e.target.getAttribute("alt");
 		selectedHint = Number(e.target.getAttribute("num"));
+		
+		if (hoverHints[selectedHint].clickable && hoverHints[selectedHint].clicked == "false") {
+			eventClicked = 2;
+		} else if (hoverHints[selectedHint].clickable == false) {
+			eventClicked = 1;
+		}
+		
 		hoverHints[selectedHint].clicked = true;
+		
 		if (type == "bigImage") {
 			scrolledY = false;
 			modalShown = true;
 		}
-		// if the right hint is clicked, then show hearts from grandma
-		if (selectedHint == nextHint && !allClicked) {
-			responseVisibility = true;
-			hintResponse = nextHintResponse;
-		}
-		// then in 2 second, hide the quotes
-		setTimeout(function() {
-			if (responseVisibility) {
-				permaQuoteVisibility = false;
-			}
-			responseVisibility = false;
-		}, 5000);
 		
 		/// then in 4 seconds, show the picture again
 		setTimeout(function() {
-			permaQuoteVisibility = true;
 			if (allClicked) {
 				readyForNext = true;
 				bounce = "";
+				selectedHint = null;
 			}
-		}, 8000);
+		}, 6000);
 		checkAllClicked();
+	}
 	}
 	
 	function closeModal() {
+		if (eventClicked != 3) {
 		modalShown = false;
 		selectedHint = null;
 		checkAllClicked();
 	}
+	}
 	
-	let nextHintResponse = null;
-	let hintImage = null;
-	let hintPrompt = null;
-	let responseVisibility = false;
-	let permaQuoteVisibility = true;
+	let hintImage = [];
+	let hintPrompt = {
+		"2": "Bring me these ingredients.",
+		"5": "Find these ingredients",
+		"8": "Look at the menu and watch TV!",
+		"11": "I need a few more things..." 
+	};
+	let answerPrompt = {
+		"2": "Kimchi is almost ready!",
+		"5": "Let's mix and taste.",
+		"8": "Your food is coming soon!",
+		"11": "OK, the kimchi is almost ready!" 
+	};
 	// Checking if all modals have been clicked
 	function checkAllClicked() {
 		allClicked = true;
+		hintImage = [];
 		hoverHints.forEach(function(d) {
-			if (d.clicked == "false") {
-				hintImage = d.image;
-				hintPrompt = d.prompt;
-				nextHintResponse = d.response;
+			if (d.clicked == "false" && d.clickable) {
 				allClicked = false;
-				nextHint = d.num;
+			}
+			if (d.clickable) {
+				if (d.clicked == "false") {
+					hintImage.push([d.image,"unclicked"]);
+				} else {
+					hintImage.push([d.image,"clicked"]);
+				}
 			}
 		});
-		
-		if (allClicked) {
-			hintImage = "kimchi.png";
-			nextHintResponse = ["Almost ready. Explore while you wait.","Kimchi coming soon. Look around!","You can try kimchi soon. Try clicking other things!","Kimchi is nearly done!","Kimchi is coming. Click around for a bit!","Give the kimchi a few more seconds.","Be patient! Kimchi coming soon."].randFromArray();
-			hintPrompt = ["Kimchi is ready!","Kimchi ready! Click the button.","Let's eat kimchi!","Let's try some kimchi now.","You want to try some kimchi now?","Taste some kimchi!","Let's try the kimchi."].randFromArray();
-			hintResponse = nextHintResponse;
-		}
 	}
 	
 	function nextChapter() {
@@ -111,6 +125,7 @@
 		if (chapterTracker == chapter) {
 			displayMode = "block";
 		}
+		hoverHints = hoverHints;
 		modalShown = modalShown;
 		hed = hed;
 		words = words;
@@ -126,51 +141,73 @@
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} draggable="false"/>
 		
 		{#each hoverHints as hint}
-			<div class="hintContainer {hint.addclass}" class:selected="{selectedHint === hint.num}" style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal} hed={hint.hed} words={hint.words} type={hint.type} num={hint.num} image={hint.image}>
-			{#if hint.image != undefined}
-				{#if hint.width > 500}
-					<img class="hoverHint bigItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}"   draggable="false"/>
-				{:else}
-					<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
-				{/if}
-			{/if}
-			{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker"}
-				{#if permaQuoteVisibility}
+			<!-- {#if (hint.clickable == true && hint.clicked == "false") || (hint.clickable == false) || (hint.keeponpage == "true")} -->
+				<div class="hintContainer {hint.addclass} touch{hint.notouch} clickable-{hint.clickable}-{hint.clicked} " class:selected="{selectedHint === hint.num}" style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal} hed={hint.hed} words={hint.words} type={hint.type} num={hint.num} image={hint.image} clickable={hint.clickable}>
 				
-				<div class="quotebox perma {bounce} {hint.xPos}" transition:fade>
-					{#if responseVisibility}
-						<span in:fade>{hintResponse}</span>
-					{:else}
-					<img src="assets/kimchi/scene{chapter}/{hintImage}" alt={hint.alt} in:fade/>
-					{hintPrompt}
-					{/if}
-				</div>
+				{#if hint.notouch != "none"}
+					<div class="hintShadow"></div>
 				{/if}
-			{:else if hint.type != "bigImage"}
-				<div class="quotebox {hint.xPos} {hint.yPos}" transition:fade>
-					{hint.words}
+				
+				{#if hint.image != undefined}
+					
+					{#if hint.width > 500}
+						<img class="hoverHint bigItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}"   draggable="false"/>
+					{:else}
+						<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
+					{/if}
+				{/if}
+				
+				<!-- {#if hint.clickable}
+					<div class="hintBubble accent"></div>
+				{:else if hint.notouch != "none" && hint.hed != "speaker"}
+					<div class="hintBubble"></div>
+				{/if} -->
+				
+				{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker"}
+					<div class="quotebox perma {bounce} {hint.xPos}">
+							{#if !allClicked}
+								<span in:fade>{hintPrompt[chapter]}</span>
+							{:else if !readyForNext}
+								<span in:fade>{answerPrompt[chapter]}</span>
+							{/if}
+						
+						{#if readyForNext}
+						<div class="buttonWrapper">
+							<img class="eatkimchi" src="assets/kimchi/scene{chapter}/kimchi.png" alt="kimchi" in:fade/>
+							<button class="button bounce2" on:click={nextChapter} on:keydown={nextChapter} style="left:{scrollAmount}px;">Eat kimchi</button>
+						</div>
+						{:else}
+							<div class="hintImageContainer">
+								{#each hintImage as himage}
+									<div class="hintImage {himage[1]}">
+										<img src="assets/kimchi/scene{chapter}/{himage[0]}" alt={hint.alt}/>
+									</div>
+								{/each}
+							</div>
+						{/if}
+					</div>
+				{:else if hint.type != "bigImage"}
+					<div class="quotebox {hint.xPos} {hint.yPos}">
+						{hint.words}
+					</div>
+				{/if}
 				</div>
-			{/if}
-			
-		</div>
 		{/each}
 	</div>
-	{#if readyForNext && [2,5,8,11].includes(chapter)}
-	<div class="buttonWrapper bounce">
-		<button class="button" on:click={nextChapter} on:keydown={nextChapter} style="left:{scrollAmount}px;">Eat kimchi</button>
-	</div>
-	{/if}
+
 	{#if modalShown && !scrolledY}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
 			{#if type == "bigImage"}
-				<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image}" draggable="false"/>
-				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image}" draggable="false"/>
+				<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image.replace('.png','.svg')}" draggable="false"/>
+				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image.replace('.png','.svg')}" draggable="false"/>
 			{/if}
 			<div class="closeModal">Tap to exit</div>
 		</div>
 	{/if}
 	{#if !scrolled}
-		<div class="swipeHint" out:fade></div>
+		<div class="swipeHint" out:fade>
+			<img src="assets/kimchi/hand.png" alt="hint to swipe on mobile"/>
+		</div>
 	{/if}
 <style>
 	.sceneInside {
@@ -204,13 +241,63 @@
 			-ms-user-select: none; 
 				user-select: none;
 	}
-	.hintContainer:hover  {
-		margin-top: -2px;
+	.hintContainer.clickable-false-false img  {
+		filter: drop-shadow(1px 1px 5px rgba(255,255,159, 1));
+	}
+	.hintContainer.clickable-false-false.touchnone img, .hintContainer.speaker img  {
+		filter: none;
+	}
+	.hintContainer.clickable-true-false img  {
+		animation: pulse-dropshadow 2s infinite;
+	}
+	.hintContainer.clickable-true-false:hover img  {
+		animation: pulse-dropshadowhover 2s infinite;
+	}
+	.hintContainer:hover img  {
+		filter: contrast(1.3) brightness(1.2) drop-shadow(1px 1px 20px #fff);
+		/* margin-top: -2px; */
 	}
 	.hintContainer.sidehover:hover  {
 		margin-top: 0px !important;
 		margin-left: -4px !important;
 	}
+	.hintContainer:hover .perma img {
+		filter: none;
+	}
+
+	.clickable-true-true img {
+		-webkit-filter: saturate(0%) brightness(.6) !important;
+	    filter: saturate(0%) brightness(.6) !important;
+	}
+	.hintBubble {
+		width: 14px;
+		height: 14px;
+		background: #F9D594;
+		border-radius: 50%;
+		position: absolute;
+		bottom: 20px;
+		left: 20%;
+		/* transform: translateX(-50%); */
+		border: 1px solid #666;
+		pointer-events: none;
+		box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.2);
+	}
+	.hintBubble.accent {
+		width: 20px;
+		height: 20px;
+		background: #FFD141;
+		animation: pulse-black 2s infinite;
+	}
+	.clickable-false-true .hintBubble {
+		background: rgba(0,0,0,0.2);
+		animation: none;
+		box-shadow: none;
+	}
+	.clickable-true-true .hintBubble {
+		background: gray;
+		animation: none;
+	}
+	
 	
 	.quotebox {
 		background: rgba(235,204,253,1);
@@ -249,12 +336,17 @@
 		display: block !important;
 		background: white;
 		color: black;
-		width: 160px;
+		width: 180px;
 		padding: 9px;
 		box-shadow: 0px 0px 45px #000;
 		pointer-events: none;
+		font-size: 16px;
+		line-height: 18px;
+		font-weight: bold;
+		color: #444745;
 	}
 	.bounce {animation: bounce 3s infinite;}
+	.bounce2 {animation: bounce2 3s infinite; position: relative; pointer-events: auto;}
 	.hintContainer .quotebox.perma img {
 	margin-right: 5px;
 	}
@@ -269,6 +361,47 @@
 		float: left;
 		width: 40px;
 		margin-right: 7px;
+	}
+	.hintImageContainer {
+		display: block;
+	}
+	.quotebox .hintImage {
+		display: inline-block;
+		width: 25%;
+		height: auto;
+		position: relative;
+	}
+	.quotebox .clicked img {
+		filter: saturate(0%) brightness(1.5) !important;
+		-webkit-filter: saturate(0%) brightness(1.5) !important;
+	}
+	.quotebox .clicked::after {
+		content: "x";
+		color: red;
+		position: absolute;
+		left: 50%;
+		bottom: 2%;
+		font-size: 35px;
+		text-shadow: 0px 0px 2px #000;
+		transform: translate(-50%, -50%);
+	}
+	.eatkimchi {
+		position: relative;
+		left: 25%;
+		width: 50% !important;
+		filter: none !important;
+	}
+	.buttonWrapper {
+		position: relative;
+		width: 100%;
+	}
+	.buttonWrapper button.button {
+		left: 50% !important;
+		margin-left: -3px;
+		transform: translateX(-50%);
+		font-size: 16px !important;
+		font-weight: bold;
+		padding: 3px 8px;
 	}
 	@media screen and (max-width: 620px) {
 		.quotebox img {
@@ -334,28 +467,102 @@
 		margin-bottom: 0px;
 	  }
 	}
+	@keyframes bounce2 {
+	  0% {
+		bottom: 0px;
+	  }
+	 
+		5% {
+		  bottom: 5px;
+		}
+		
+		10% {
+		  bottom: 0px;
+		}
+		
+		15% {
+		  bottom: 7px;
+		}
+		60% {
+		  bottom: 0px;
+		}
+	  100% {
+		bottom: 0px;
+	  }
+	}
+	
+	@keyframes pulse-black {
+	  0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(0,0,0, 0.6);
+	  }
+	  
+	  70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 30px rgba(0,0,0, 0);
+	  }
+	  
+	  100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255,161,65,  0);
+	  }
+	}
+	
+	@keyframes pulse-dropshadow {
+	  0% {
+		transform: scale(0.95);
+		filter: drop-shadow(1px 1px 10px rgba(255,255,200, 1));
+	  }
+	  
+	  60% {
+		transform: scale(1);
+		filter: drop-shadow(1px 1px 30px rgba(255,255,200, 1));
+	  }
+	  
+	  100% {
+		transform: scale(0.95);
+		filter: drop-shadow(1px 1px 10px rgba(255,255,200, 1));
+	  }
+	}
+	@keyframes pulse-dropshadowhover {
+	  0% {
+		transform: scale(0.95);
+		filter: drop-shadow(1px 1px 10px rgba(255,255,200, 1))  brightness(1.4);
+	  }
+	  
+	  60% {
+		transform: scale(1);
+		filter: drop-shadow(1px 1px 30px rgba(255,255,200, 1))  brightness(1.4);
+	  }
+	  
+	  100% {
+		transform: scale(0.95);
+		filter: drop-shadow(1px 1px 10px rgba(255,255,200, 1))  brightness(1.4);
+	  }
+	}
+	
 	@keyframes updown-animation {
-  	0% {
+	  0% {
 		height: 15%;
-  	}
- 	
+	  }
+	 
 		20% {
-	  	height: 17%;
+		  height: 17%;
 		}
 		
 		40% {
-	  	height: 15%;
+		  height: 15%;
 		}
 		
 		60% {
-	  	height: 20%;
+		  height: 20%;
 		}
 		80% {
-	  	height: 21%;
+		  height: 21%;
 		}
-  	100% {
+	  100% {
 		height: 15%;
-  	}
+	  }
 	}
 	@keyframes updown-animation2 {
   	0% {
@@ -444,7 +651,7 @@
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
-		bottom: calc(100% - 35px);
+		top: calc(100% - 35px);
 		color: white;
 		font-family: "National 2 Web",sans-serif;
 		font-size: 16px;
@@ -524,12 +731,10 @@
 	.swipeHint {
 		position: absolute;
 		left: 70%;
-		bottom: 25%;
+		bottom: 35%;
 		width: 50px;
 		height: 50px;
 		transform: translateX(-50%);
-		background: rgba(0,0,0,0.5);
-		border-radius: 50%;
 		animation: swipe-animation 1.5s infinite;
 		display: none;
 	}

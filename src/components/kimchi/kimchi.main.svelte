@@ -5,22 +5,24 @@
 	import CutScene from "$components/kimchi/kimchi.cutscene.svelte";
 	import PreScene from "$components/kimchi/kimchi.prescene.svelte";
 	import Sound from "$components/kimchi/kimchi.sound.svelte";
+	import Progress from "$components/kimchi/kimchi.progress.svelte";
 	export let copy;
 	let loaded = false;
-	let currentChapter = 1;
+	let currentChapter = 2;
 	let sceneHeight = 700;
 	let windowWidth = 400;
 	let maxWidth = 1200;
 	let cutSceneMode = true;
 	let soundon = false;
+	let eventClicked = 0;
 	setInterval(function() {
 		windowWidth = windowWidth;
 		if (windowWidth >= maxWidth) {
 			sceneHeight = maxWidth * 7/11;
 		} else if (windowWidth > 620) {
-			sceneHeight = (windowWidth+4) * 7/11;
+			sceneHeight = (windowWidth-16) * 7/11;
 		} else {
-			sceneHeight = (windowWidth-20) * 14/11;
+			sceneHeight = (windowWidth-16) * 14/11;
 		}
 		loaded = true;
 	},100);
@@ -51,34 +53,34 @@
 </script>
 <svelte:window bind:innerWidth={windowWidth} on:scroll={parseScrollY}/>
 {#if loaded}
-<Sound bind:chapter={currentChapter} bind:mode={cutSceneMode} bind:soundon={soundon}/>
+<Sound bind:chapter={currentChapter} bind:eventClicked={eventClicked} bind:mode={cutSceneMode} bind:soundon={soundon}/>
 <div class="scene" bind:this={scene}  style="height:{sceneHeight}px;" on:scroll={parseScroll} on:mousemove={parseScroll}>
 	<!-- Intro -->
 	{#if currentChapter == 0}
-	<Intro chapter="0" bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth} bind:soundon={soundon}/>
-	{/if}
-	
-	<!-- Pre scenes -->
-	{#if [1,4,7,10,13].includes(currentChapter)}
-		<PreScene chapter={currentChapter} cutsceneText={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
-	{/if}
-	
-	<!-- Main scenes -->
-	{#if [2,5,8,11].includes(currentChapter)}
-		<Scene chapter={currentChapter} hoverHints={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} bind:scrolled={scrolled} bind:scrolledY={scrolledY} bind:scrollAmount={scrollAmount}/>
-	{/if}
-		
-	<!-- Cut scenes -->
-	{#if [3,6,9,12].includes(currentChapter)}
-		<CutScene chapter={currentChapter} cutsceneText={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
+		{#key currentChapter}
+		<Intro chapter="0" bind:eventClicked={eventClicked} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth} bind:soundon={soundon}/>
+		{/key}
+	{:else if [1,4,7,10,13].includes(currentChapter)}
+		{#key currentChapter}
+		<PreScene bind:chapter={currentChapter} bind:eventClicked={eventClicked} cutsceneText={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
+		{/key}
+	{:else if [2,5,8,11].includes(currentChapter)}
+		{#key currentChapter}
+		<Scene chapter={currentChapter} bind:eventClicked={eventClicked} hoverHints={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} bind:scrolled={scrolled} bind:scrolledY={scrolledY} bind:scrollAmount={scrollAmount}/>
+		{/key}
+	{:else if [3,6,9,12].includes(currentChapter)}
+		{#key currentChapter}
+		<CutScene chapter={currentChapter} bind:eventClicked={eventClicked} cutsceneText={copy["scene"+currentChapter]} bind:chapterTracker={currentChapter} w={windowWidth} h={sceneHeight} maxWidth={maxWidth}/>
+		{/key}	
 	{/if}
 </div>
+<Progress bind:eventClicked={eventClicked} bind:chapter={currentChapter}/>
 {/if}
 <style>
 .scene {
 	max-width: 1200px;
 	width: 100%;
-	margin: 0 auto 50px;
+	margin: 0 auto 0px;
 	overflow-x: hidden;
 	overscroll-behavior-x: none;
 	position: relative;

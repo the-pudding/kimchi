@@ -7,9 +7,11 @@
 	export let h;
 	export let maxWidth;
 	export let soundon;
+	export let eventClicked;
 	
 	function start() {
 		chapterTracker = chapterTracker + 1;
+		eventClicked = 1;
 	}
 	
 	function soundtoggle() {
@@ -18,6 +20,7 @@
 	
 	function credits() {
 		chapterTracker = 13;
+		eventClicked = 1;
 	}
 	
 	$: {
@@ -61,6 +64,7 @@
 		top: 0;
 		width: 100%;
 		height: 100%;
+		user-select: none;
 	}
 	.mainImage img {
 		position: absolute;
@@ -75,6 +79,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		top: 50%;
+		user-select: none;
 	}
 	.mainImage button {
 		display:block;

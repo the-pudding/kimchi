@@ -2,7 +2,7 @@
 	import { getContext } from "svelte";
 	import Kimchi from "$components/kimchi/kimchi.main.svelte";
 	import WIP from "$components/helpers/WIP.svelte";
-	// import Footer from "$components/Footer.svelte";
+	import Footer from "$components/Footer.svelte";
 
 	const copy = getContext("copy");
 	for (let i in copy) {
@@ -18,6 +18,11 @@
 				if (copy[i][j]["y"] > 50) {
 					copy[i][j]["yPos"] = "bottom"; 
 				}
+				if (copy[i][j]["clicked"] == "false") {
+					copy[i][j]["clickable"] = true;
+				} else {
+					copy[i][j]["clickable"] = false;
+				}
 				counter++;
 			}
 		}
@@ -27,4 +32,4 @@
 
 <!-- <WIP /> -->
 <Kimchi copy={copy}/>
-<!-- <Footer /> -->
+<Footer />

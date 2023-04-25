@@ -31,8 +31,7 @@
 	function onKeyDown(e) {
 		if (e.keyCode == 37 || e.keyCode == 38) {
 			 next(1);
-		 }
-		 if (e.keyCode == 39 || e.keyCode == 40) {
+		 } else if (e.keyCode == 39 || e.keyCode == 40) {
 			 next();
 		 }
 	}
@@ -205,6 +204,7 @@
 	
 	  
 	$: {
+		stageText = stageText;
 		chapterTracker = chapterTracker;
 		cutsceneStage = cutsceneStage;
 		w = w;

@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	export let chapter;
 	export let mode;
+	export let eventClicked;
 	let synth;
 	let now;
 	let mounted = false;
@@ -161,7 +162,7 @@
 	
 	function soundToggle() {
 		soundon = !soundon;
-		play("Bb1",2);
+		// play("Bb1",2);
 	}
 	
 	function play(n, length) {
@@ -227,6 +228,33 @@
 			}
 		}
 	}
+	
+	setInterval(function() {
+		if (eventClicked == 1) {
+			play("C8",0.05);
+			eventClicked = 0;
+		} 
+		if (eventClicked == 3) {
+			play("C6",0.05);
+			setTimeout(function() {
+				play("G6",0.05);
+				eventClicked = 0;
+			},50);
+		} 
+		if (eventClicked == 2) {
+			play("C7",0.05);
+			setTimeout(function() {
+				play("E7",0.05);
+			},50);
+			setTimeout(function() {
+				play("G7",0.05);
+			},100)
+			setTimeout(function() {
+				play("Bb7",0.1);
+			},150)
+			eventClicked = 0;
+		}
+	},10);
 	
 
 	Array.prototype.randFromArray = function(){
