@@ -8,7 +8,7 @@
 	import Progress from "$components/kimchi/kimchi.progress.svelte";
 	export let copy;
 	let loaded = false;
-	let currentChapter = 11;
+	let currentChapter = 0;
 	let sceneHeight = 700;
 	let windowWidth = 400;
 	let maxWidth = 1200;

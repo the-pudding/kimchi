@@ -33,7 +33,7 @@
 		if (e.keyCode == 37 || e.keyCode == 38) {
 			 next(1);
 		 }
-		 if (e.keyCode == 39 || e.keyCode == 40) {
+		 if (e.keyCode == 39 || e.keyCode == 40 || e.keyCode == 13 || e.keyCode == 49) {
 			 next();
 		 }
 	}

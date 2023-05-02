@@ -23,60 +23,104 @@
 	let selectedHint = null;
 	let hintResponse = null;
 	
+	let maxHints = 0;
 	onMount(async () => {
 		cutsceneStage = 0;
 		for (let i = 0; i < hoverHints.length; i++) {
 			hoverHints[i].clicked = "false";
+			if (hoverHints[i].clickCounter > maxHints) {
+				maxHints = hoverHints[i].clickCounter; 
+			}
 		}
 	});
 	
-	
+	let keyboardInteraction = false;
+	let firstReady = true;
 	function showModal(e) {
-	
+		closeModal();
+		if (!keyboardInteraction) {
+			for (let i = 0; i < hoverHints.length; i++) {
+				hoverHints[i].keyboardSelect = "False";
+			} 
+		}
 		if (eventClicked != 3) {
-		hed = e.target.getAttribute("hed");
-		words = e.target.getAttribute("words");
-		type = e.target.getAttribute("type");
-		image = "scene" + chapter + "/" + e.target.getAttribute("image");
-		alt = e.target.getAttribute("alt");
-		selectedHint = Number(e.target.getAttribute("num"));
-		
-		if (hoverHints[selectedHint].clickable && hoverHints[selectedHint].clicked == "false") {
-			eventClicked = 2;
-		} else if (hoverHints[selectedHint].clickable == false) {
-			eventClicked = 1;
-		}
-		
-		hoverHints[selectedHint].clicked = true;
-		
-		if (type == "bigImage") {
-			scrolledY = false;
-			modalShown = true;
-		}
-		
-		/// then in 4 seconds, show the picture again
-		setTimeout(function() {
-			if (allClicked) {
-				readyForNext = true;
-				bounce = "";
-				selectedHint = null;
+			hed = e.target.getAttribute("hed");
+			words = e.target.getAttribute("words");
+			type = e.target.getAttribute("type");
+			image = "scene" + chapter + "/" + e.target.getAttribute("image");
+			alt = e.target.getAttribute("alt");
+			selectedHint = Number(e.target.getAttribute("num"));
+			
+			if (hoverHints[selectedHint].clickable && hoverHints[selectedHint].clicked == "false") {
+				eventClicked = 2;
+			} else if (hoverHints[selectedHint].clickable == false) {
+				eventClicked = 1;
 			}
-		}, 6000);
-		checkAllClicked();
-	}
+			
+			hoverHints[selectedHint].clicked = true;
+			
+			if (type == "bigImage") {
+				scrolledY = false;
+				modalShown = true;
+			}
+			
+			/// then in 4 seconds, show the picture again
+			setTimeout(function() {
+				if (allClicked) {
+					readyForNext = true;
+					bounce = "";
+					if (firstReady) {
+						selectedHint = null;
+						firstReady = false;
+					}
+				}
+			}, 6000);
+			checkAllClicked();
+		}
 	}
 	
 	function closeModal() {
 		if (eventClicked != 3) {
-		modalShown = false;
-		selectedHint = null;
-		checkAllClicked();
+			modalShown = false;
+			selectedHint = null;
+			checkAllClicked();
+		}
 	}
+	
+	let keyboardSelected = -1;
+	function onKeyDown(e) {
+		keyboardInteraction = true;
+		if (e.keyCode == 37 || e.keyCode == 38) {
+			keyboardSelected--;
+		}
+		if (e.keyCode == 39 || e.keyCode == 40 || e.keyCode == 13) {
+			 keyboardSelected++;
+		}
+		if (e.keyCode == 13 && allClicked && readyForNext) {
+			 nextChapter();
+		}
+		if (keyboardSelected > maxHints) {
+			keyboardSelected = 0;
+		}
+		if (keyboardSelected < 0) {
+			keyboardSelected = maxHints;
+		}
+		for (let i = 0; i < hoverHints.length; i++) {
+			if (hoverHints[i].clickCounter == keyboardSelected) {
+				hoverHints[i].keyboardSelect = "True";
+			} else {
+				hoverHints[i].keyboardSelect = "False";
+			}
+		} 
+		setTimeout(function() {
+			const element = {"target": document.querySelector('.keyboardSelectTrue') };
+			showModal(element);
+		},50);
 	}
 	
 	let hintImage = [];
 	let hintPrompt = {
-		"2": "Bring me these ingredients.",
+		"2": "Bring me these ingredients. <div class='quote_hint'><img src='assets/kimchi/universal/keyboard.png'/></div>",
 		"5": "Find these ingredients",
 		"8": "Look at the menu and watch TV!",
 		"11": "I need a few more things..." 
@@ -137,61 +181,56 @@
 		checkAllClicked();
 	}
 </script>
+<svelte:window on:keydown|preventDefault={onKeyDown}/>
 	<div class="sceneInside {sceneOffset}" style="display:{displayMode}" on:click={getPosition} on:keydown={getPosition} in:fade>
 		<img class="sceneImage" alt="scene of grandma making kimchi" src="assets/kimchi/scene{chapter}/background.png" on:click={closeModal} on:keydown={closeModal} draggable="false"/>
 		
 		{#each hoverHints as hint}
 			<!-- {#if (hint.clickable == true && hint.clicked == "false") || (hint.clickable == false) || (hint.keeponpage == "true")} -->
-				<div class="hintContainer {hint.addclass} touch{hint.notouch} clickable-{hint.clickable}-{hint.clicked} " class:selected="{selectedHint === hint.num}" style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal} hed={hint.hed} words={hint.words} type={hint.type} num={hint.num} image={hint.image} clickable={hint.clickable}>
+				<button class="hintContainer keyboardSelect{hint.keyboardSelect} {hint.addclass} touch{hint.notouch} clickable-{hint.clickable}-{hint.clicked}" class:selected="{selectedHint === hint.num}" style="width:{hint.width/fullWidth}%; left:{hint.x}%; top:{hint.y}%; pointer-events: {hint.notouch};" on:click={showModal} on:keydown={showModal} hed={hint.hed} words={hint.words} type={hint.type} num={hint.num} image={hint.image} clickable={hint.clickable}>
 				
-				{#if hint.notouch != "none"}
-					<div class="hintShadow"></div>
-				{/if}
-				
-				{#if hint.image != undefined}
-					
-					{#if hint.width > 500}
-						<img class="hoverHint bigItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}"   draggable="false"/>
-					{:else}
-						<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
+					{#if hint.notouch != "none"}
+						<div class="hintShadow"></div>
 					{/if}
-				{/if}
 				
-				<!-- {#if hint.clickable}
-					<div class="hintBubble accent"></div>
-				{:else if hint.notouch != "none" && hint.hed != "speaker"}
-					<div class="hintBubble"></div>
-				{/if} -->
-				
-				{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker" || hint.addclass == "speaker sidespeaker"}
-					<div class="quotebox perma {bounce} {hint.xPos}">
-							{#if !allClicked}
-								<span in:fade>{hintPrompt[chapter]}</span>
-							{:else if !readyForNext}
-								<span in:fade>{answerPrompt[chapter]}</span>
-							{/if}
+					{#if hint.image != undefined}
 						
-						{#if readyForNext}
-						<div class="buttonWrapper">
-							<img class="eatkimchi" src="assets/kimchi/scene{chapter}/kimchi.png" alt="kimchi" in:fade/>
-							<button class="button bounce2" on:click={nextChapter} on:keydown={nextChapter} style="left:{scrollAmount}px;">Eat kimchi</button>
-						</div>
+						{#if hint.width > 500}
+							<img class="hoverHint bigItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}"   draggable="false"/>
 						{:else}
-							<div class="hintImageContainer">
-								{#each hintImage as himage}
-									<div class="hintImage {himage[1]}">
-										<img src="assets/kimchi/scene{chapter}/{himage[0]}" alt={hint.alt}/>
-									</div>
-								{/each}
-							</div>
+							<img class="hoverHint smallItem" alt="{hint.alt}" src="assets/kimchi/scene{chapter}/{hint.image}" draggable="false"/>
 						{/if}
-					</div>
-				{:else if hint.type != "bigImage"}
-					<div class="quotebox {hint.xPos} {hint.yPos}">
-						{hint.words}
-					</div>
-				{/if}
-				</div>
+					{/if}
+					
+					{#if hint.addclass == "speaker" || hint.addclass == "updown2 speaker" || hint.addclass == "speaker sidespeaker"}
+						<div class="quotebox perma {bounce} {hint.xPos}">
+								{#if !allClicked}
+									<span in:fade>{@html hintPrompt[chapter]}</span>
+								{:else if !readyForNext}
+									<span in:fade>{answerPrompt[chapter]}</span>
+								{/if}
+							
+							{#if readyForNext}
+							<div class="buttonWrapper">
+								<img class="eatkimchi" src="assets/kimchi/scene{chapter}/kimchi.png" alt="kimchi" in:fade/>
+								<button class="button bounce2" on:click={nextChapter} on:keydown={nextChapter} style="left:{scrollAmount}px;">Eat kimchi<div class="button_hint">Click or press enter</div></button>
+							</div>
+							{:else}
+								<div class="hintImageContainer">
+									{#each hintImage as himage}
+										<div class="hintImage {himage[1]}">
+											<img src="assets/kimchi/scene{chapter}/{himage[0]}" alt={hint.alt}/>
+										</div>
+									{/each}
+								</div>
+							{/if}
+						</div>
+					{:else if hint.type != "bigImage"}
+						<div class="quotebox {hint.xPos} {hint.yPos}">
+							{hint.words}
+						</div>
+					{/if}
+				</button>
 		{/each}
 	</div>
 
@@ -224,6 +263,8 @@
 	.hintContainer {
 		position: absolute;
 		cursor: pointer;
+		background: none;
+		padding: 0 !important;
 	}
 	.hoverHint {
 		/* position: absolute; */
@@ -253,8 +294,11 @@
 	.hintContainer.clickable-true-false:hover img  {
 		animation: pulse-dropshadowhover 2s infinite;
 	}
-	.hintContainer:hover img  {
+	.hintContainer:hover img   {
 		filter: contrast(1.3) brightness(1.2); 		/* margin-top: -2px; */
+	}
+	.hintContainer.keyboardSelectTrue img {
+		filter: contrast(1.3) brightness(1.2) drop-shadow(1px 1px 5px rgba(255,255,159, 1));
 	}
 	.hintContainer.sidehover:hover  {
 		margin-top: 0px !important;
@@ -312,6 +356,7 @@
 		text-align: left;
 		line-height: 17px;
 		box-shadow: 0px 0px 20px #35283D;
+		z-index: 90;
 	}
 	.quotebox.top {
 		bottom: auto;

@@ -23,6 +23,12 @@
 		eventClicked = 1;
 	}
 	
+	function onKeyDown(e) {
+		if (e.keyCode == 13 || e.keyCode == 49) {
+			 start();
+		 }
+	}
+	
 	$: {
 		w = w;
 		if (w >= maxWidth) {
@@ -34,7 +40,7 @@
 		}
 	}
 </script>	
-<svelte:window bind:innerWidth={w}/>
+<svelte:window bind:innerWidth={w} on:keydown|preventDefault={onKeyDown}/>
 	<div class="mainImage">
 		{#if w > 640}
 			<img alt="a marker drawing of kimchi leaves" src="assets/kimchi/universal/main-desktop.jpg"/>
@@ -42,13 +48,17 @@
 			<img alt="a marker drawing of kimchi leaves" src="assets/kimchi/universal/main-mobile.jpg"/>
 		{/if}
 		<div class="buttonContainer">
-		<button class="start" on:click={start} on:keydown={start}>Start</button>
+		<button class="start" on:click={start} on:keydown={start}>
+			Start
+			<div class="button_hint">Press <span>Enter</span></div>
+		</button>
 				<button class="sound" on:click={soundtoggle} on:keydown={soundtoggle}>
 			{#if soundon}
 			Sound: on
 			{:else}
 			Sound: off
 			{/if}
+			<div class="button_hint">Press <span>Spacebar</span></div>
 		</button>
 		
 		<button class="credits" on:click={credits} on:keydown={credits}>Credits</button>

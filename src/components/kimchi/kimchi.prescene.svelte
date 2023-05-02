@@ -31,7 +31,7 @@
 	function onKeyDown(e) {
 		if (e.keyCode == 37 || e.keyCode == 38) {
 			 next(1);
-		 } else if (e.keyCode == 39 || e.keyCode == 40) {
+		 } else if (e.keyCode == 39 || e.keyCode == 40 || e.keyCode == 13 || e.keyCode == 49) {
 			 next();
 		 }
 	}
@@ -94,7 +94,7 @@
 			} else {
 				img = p.loadImage(`assets/kimchi/kimchibg-2.png`);
 			}
-			p.frameRate(20);
+			// p.frameRate(20);
 		};
 	
 		p.draw = () => {
@@ -113,8 +113,8 @@
 							randomSeeker = Math.round(img.width/cellSize);
 						}
 						let c1 = img.get(xCoord, yCoord);
-						cellSize = w/20 + Math.round(dist*10);
-						
+						cellSize = p.constrain(w/20 + Math.round(dist*20),30,200);
+												
 						if (chapter == 1) {
 							c1[0] *= 0.7;
 							c1[1] *= 0.7;

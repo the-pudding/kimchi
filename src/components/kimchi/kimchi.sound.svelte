@@ -256,6 +256,12 @@
 		}
 	},10);
 	
+	function onKeyDown(e) {
+		if (e.keyCode == 32) {
+			soundToggle();
+		}
+	}
+	
 
 	Array.prototype.randFromArray = function(){
 	  return this[Math.floor(Math.random()*this.length)];
@@ -271,6 +277,7 @@
 		mode = mode;
 	}
 </script>	
+<svelte:window on:keydown|preventDefault={onKeyDown}/>
 <div class="soundbar">
 		<button class="soundbutton" on:keydown={soundToggle} on:click={soundToggle}>
 			{#if soundon}
