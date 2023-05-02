@@ -110,12 +110,14 @@ Kimchi styles
 	font-size: 27px;
 	z-index: 100;
 }
+.scene {min-height: 300px;}
 .scene .sceneInside {
 	box-sizing: border-box;
 	position: relative;
 	left: 0;
 	top: 0;
 	width: 200%;
+	min-height: 300px;
 	height: 100%;
 	max-width: none;
 	transition: left 200ms cubic-bezier(0.420, 0.000, 0.580, 1.000); /* ease-in-out */
