@@ -6,6 +6,7 @@
 	import PreScene from "$components/kimchi/kimchi.prescene.svelte";
 	import Sound from "$components/kimchi/kimchi.sound.svelte";
 	import Progress from "$components/kimchi/kimchi.progress.svelte";
+	import Tip from "$components/helpers/Tip.svelte";
 	export let copy;
 	let loaded = false;
 	let currentChapter = 0;
@@ -53,6 +54,9 @@
 	
 </script>
 <svelte:window on:scroll={parseScrollY}/>
+<div class="tip_container">
+	<Tip />
+</div>
 {#if loaded}
 <Sound bind:chapter={currentChapter} bind:eventClicked={eventClicked} bind:mode={cutSceneMode} bind:soundon={soundon}/>
 <div class="scene" bind:this={scene} bind:clientWidth={insideWidth}  style="height:{sceneHeight}px;" on:scroll={parseScroll} on:mousemove={parseScroll}>
@@ -99,5 +103,9 @@
 	.scene {
 		overflow-x: scroll;
 	}
+}
+.tip_container {
+	display: flex; 
+	justify-content: space-between;
 }
 </style>
