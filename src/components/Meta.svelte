@@ -1,6 +1,7 @@
 <script>
 	export let title = "The search for my kimchi";
-	export let description = "Our author loved his grandmother's fresh kimchi. But as he aged, tasting the defining flavor of his childhood became elusive.";
+	export let description =
+		"Our author loved his grandmother's fresh kimchi. But as he aged, tasting the defining flavor of his childhood became elusive.";
 	export let url = "https://pudding.cool/2023/05/kimchi";
 	export let keywords = "";
 	export let preloadFont = [];
@@ -19,8 +20,8 @@
 	<meta property="og:type" content="article" />
 	<meta property="og:locale" content="en_US" />
 
-	<meta property="og:image" content="{url}/assets/social-facebook.jpg" />
-	<meta property="og:image:type" content="image/jpeg" />
+	<meta property="og:image" content="{url}/assets/social-facebook.png" />
+	<meta property="og:image:type" content="image/png" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="600" />
 
@@ -29,7 +30,7 @@
 	<meta name="twitter:creator" content="@puddingviz" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<meta name="twitter:image:src" content="{url}/assets/social-twitter.jpg" />
+	<meta name="twitter:image:src" content="{url}/assets/social-twitter.png" />
 
 	<meta name="robots" content="max-image-preview:large" />
 
