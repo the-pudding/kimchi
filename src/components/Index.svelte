@@ -15,11 +15,14 @@
 				copy[i][j]["num"] = counter;
 				copy[i][j]["xPos"] = "left";
 				copy[i][j]["yPos"] = "top";
-				if ( (copy[i][j]["x"] > 25 && copy[i][j]["x"] < 50 ) || (copy[i][j]["x"] > 75)) {
-					copy[i][j]["xPos"] = "right"; 
+				if (
+					(copy[i][j]["x"] > 25 && copy[i][j]["x"] < 50) ||
+					copy[i][j]["x"] > 75
+				) {
+					copy[i][j]["xPos"] = "right";
 				}
 				if (copy[i][j]["y"] > 50) {
-					copy[i][j]["yPos"] = "bottom"; 
+					copy[i][j]["yPos"] = "bottom";
 				}
 				if (copy[i][j]["addclass"] == undefined) {
 					copy[i][j]["addclass"] = "";
@@ -44,5 +47,13 @@
 </script>
 
 <!-- <WIP /> -->
-<Kimchi copy={copy}/>
+<div class="wrapper">
+	<Kimchi {copy} />
+</div>
 <Footer />
+
+<style>
+	.wrapper {
+		min-height: 480px;
+	}
+</style>

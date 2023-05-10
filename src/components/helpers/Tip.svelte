@@ -1,7 +1,8 @@
 <script>
 	import { DollarSign } from "lucide-svelte";
 	export let text = "Tip";
-	export let href = "https://checkout.stripe.com/c/pay/cs_live_a1c8aI8brGH7KRjoEd6XOGBGfCStLyqn4ajmd23lPVuGgOBkoPgF1RpI2j#fidkdWxOYHwnPyd1blppbHNgWjA0SF9CXVZETVdkV01pVG5SSlVUPENGNGt3RERgQnFOSFY2dnFzRFZiNDc9UGYxQjxvT1d9S1M0aTxrRzBNcmZxcEZmQTddc2NUXTZscXFVM3RscV9UMTNXNTVndTBqUnBcRCcpJ3VpbGtuQH11anZgYUxhJz8nZ0xcMGtMPUdPZjVqNn90YFBcJ3gl";
+	export let href =
+		"https://checkout.stripe.com/c/pay/cs_live_a1c8aI8brGH7KRjoEd6XOGBGfCStLyqn4ajmd23lPVuGgOBkoPgF1RpI2j#fidkdWxOYHwnPyd1blppbHNgWjA0SF9CXVZETVdkV01pVG5SSlVUPENGNGt3RERgQnFOSFY2dnFzRFZiNDc9UGYxQjxvT1d9S1M0aTxrRzBNcmZxcEZmQTddc2NUXTZscXFVM3RscV9UMTNXNTVndTBqUnBcRCcpJ3VpbGtuQH11anZgYUxhJz8nZ0xcMGtMPUdPZjVqNn90YFBcJ3gl";
 </script>
 
 <a class="tip-button" {href} target="_blank" rel="noreferrer" role="button"
@@ -22,6 +23,9 @@
 		margin-left: auto;
 		margin-right: 10px;
 		margin-bottom: 20px;
+		position: absolute;
+		top: 16px;
+		right: 16px;
 	}
 
 	span {
