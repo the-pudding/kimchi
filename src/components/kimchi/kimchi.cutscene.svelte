@@ -155,9 +155,9 @@
 						p.fill(c1);
 						let x1 = x*cellSize;
 						let y1 = y*cellSize;
-						let quadRand = dist*90*Math.random();
-						let quadRand2 = dist*90*Math.random();
-						let quadRand3 = dist*90*Math.random();
+						let quadRand = dist*90*p.random(0.5,1);
+						let quadRand2 = dist*90*p.random(0.5,1);
+						let quadRand3 = dist*90*p.random(0.5,1);
 						p.quad(x1-quadRand2,y1-quadRand3,x1+cellSize-quadRand2,y1-quadRand3,x1+quadRand*2,y1+cellSize,x1-quadRand,y1+cellSize+quadRand)
 					}
 			  	}

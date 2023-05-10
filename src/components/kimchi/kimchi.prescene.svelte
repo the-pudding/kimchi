@@ -150,7 +150,7 @@
 							c1[3] = 0;
 						}
 						p.fill(c1);
-						let rand = dist*90*Math.random();
+						let rand = dist*90*p.random(0.5,1);
 						p.ellipse(x*cellSize,y*cellSize,cellSize*1.2+rand,cellSize*1.2+rand);
 						//p.rect(x*cellSize,y*cellSize,cellSize,cellSize);
 					}

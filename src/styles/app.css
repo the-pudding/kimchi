@@ -260,4 +260,10 @@ Kimchi styles
 		line-height: 24px;
 	}
 }
+.visualContainer, .sceneInside {
+	overflow: hidden;
+}
+.visualContainer > div:first-child {
+	overflow: hidden;
+}
 
