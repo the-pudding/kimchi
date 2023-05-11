@@ -237,8 +237,16 @@
 	{#if modalShown && !scrolledY}
 		<div class="modal {type}" transition:fade="{{duration: 200}}" on:click={closeModal} on:keydown={closeModal}>
 			{#if type == "bigImage"}
-				<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image.replace('.png','.svg')}" draggable="false"/>
-				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image.replace('.png','.svg')}" draggable="false"/>
+				<object class="mobileImage" aria-label="{alt}" type="image/svg+xml" data="assets/kimchi/mobile/{image.replace('.png','.svg')}" on:click={closeModal} on:keydown={closeModal}>
+					<img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image.replace('.png','.svg')}" draggable="false"/>
+				</object>
+				
+				<object class="desktopImage" aria-label="{alt}" type="image/svg+xml" data="assets/kimchi/desktop/{image.replace('.png','.svg')}" on:click={closeModal} on:keydown={closeModal}>
+					<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image.replace('.png','.svg')}" draggable="false"/>
+				</object>
+
+				<!-- <img class="mobileImage" alt="{alt}" src="assets/kimchi/mobile/{image.replace('.png','.svg')}" draggable="false"/>
+				<img class="desktopImage" alt="{alt}" src="assets/kimchi/desktop/{image.replace('.png','.svg')}" draggable="false"/> -->
 			{/if}
 			<div class="closeModal">Tap to exit</div>
 		</div>
@@ -249,6 +257,9 @@
 		</div>
 	{/if}
 <style>
+	.modal object {
+		pointer-events: none;
+	}
 	.sceneInside {
 		background: black;
 		font-family: "National 2 Web", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif !important;
@@ -695,7 +706,7 @@
 		z-index: 999;
 		
 	}
-	.modal.bigImage img {
+	.modal.bigImage img, .modal.bigImage object {
 		width: 90%;
 		left: 5%;
 		top: 50%;
